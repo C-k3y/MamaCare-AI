@@ -37,7 +37,7 @@ MamaCare AI addresses these challenges by offering real-time pregnancy monitorin
 * React
 * Vite
 * Tailwind CSS
-* TypeScript
+* TypeScript/JavaScript
 
 ### Backend
 
@@ -91,11 +91,3 @@ MamaCare AI addresses these challenges by offering real-time pregnancy monitorin
 * Blockchain-secured medical records
 * Community Health Worker (CHW) portal
 * National maternal health analytics dashboard
-
-## Sustainable Development Goal
-
-MamaCare AI supports **United Nations Sustainable Development Goal 3 (Good Health and Well-being)** by promoting accessible, data-driven maternal healthcare and helping reduce preventable maternal and newborn deaths.
-
-## Vision
-
-To create an intelligent, accessible, and secure digital healthcare ecosystem that empowers every mother with timely, personalized, and life-saving pregnancy care—regardless of location or access to traditional healthcare services.
