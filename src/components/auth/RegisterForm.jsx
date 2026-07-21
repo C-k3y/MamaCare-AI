@@ -1,6 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { authService } from "../../services/authService";
 
 const RegisterForm = () => {
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
     // Inline styles matching the app's premium glassmorphism theme
     const styles = {
         page: {
@@ -65,15 +85,39 @@ const RegisterForm = () => {
             width: '100%',
             padding: '14px',
             borderRadius: '12px',
-            background: 'linear-gradient(135deg, #ff8fab 0%, #fb6f92 100%)',
+            background: loading
+                ? 'linear-gradient(135deg, #ffb3c6 0%, #fca5b8 100%)'
+                : 'linear-gradient(135deg, #ff8fab 0%, #fb6f92 100%)',
             color: 'white',
             fontSize: '1rem',
             fontWeight: '600',
             border: 'none',
-            cursor: 'pointer',
+            cursor: loading ? 'not-allowed' : 'pointer',
             boxShadow: '0 4px 15px rgba(251, 111, 146, 0.3)',
             marginBottom: '24px',
-            marginTop: '8px'
+            marginTop: '8px',
+            opacity: loading ? 0.7 : 1,
+            transition: 'opacity 0.2s'
+        },
+        errorMsg: {
+            background: 'rgba(254, 202, 202, 0.6)',
+            border: '1px solid #fca5a5',
+            color: '#b91c1c',
+            borderRadius: '10px',
+            padding: '10px 14px',
+            marginBottom: '16px',
+            fontSize: '0.875rem',
+            textAlign: 'left'
+        },
+        successMsg: {
+            background: 'rgba(187, 247, 208, 0.6)',
+            border: '1px solid #86efac',
+            color: '#15803d',
+            borderRadius: '10px',
+            padding: '10px 14px',
+            marginBottom: '16px',
+            fontSize: '0.875rem',
+            textAlign: 'left'
         },
         footerText: {
             fontSize: '0.9rem',
@@ -107,7 +151,11 @@ const RegisterForm = () => {
 
         setLoading(true);
         try {
-            const data = await authService.register({ name, email, password });
+            const data = await authService.register({
+                name: formData.fullName,
+                email: formData.email,
+                password: formData.password
+            });
             const token = data.token || data.access_token;
             const role = data.role || data.user?.role || 'patient';
             login(token, role);
@@ -127,6 +175,8 @@ const RegisterForm = () => {
                 <h1 style={styles.title}>Create Account</h1>
                 <p style={styles.description}>Join Mamacare AI and start your journey.</p>
                 <form onSubmit={handleSubmit}>
+                    {error && <div style={styles.errorMsg}>{error}</div>}
+                    {success && <div style={styles.successMsg}>{success}</div>}
                     <div style={styles.formGroup}>
                         <label htmlFor="fullName" style={styles.label}>Full Name:</label>
                         <input
@@ -135,6 +185,8 @@ const RegisterForm = () => {
                             name="fullName"
                             style={styles.input}
                             placeholder="Jane Doe"
+                            value={formData.fullName}
+                            onChange={handleChange}
                             required
                         />
                     </div>
@@ -146,6 +198,8 @@ const RegisterForm = () => {
                             name="email"
                             style={styles.input}
                             placeholder="jane@example.com"
+                            value={formData.email}
+                            onChange={handleChange}
                             required
                         />
                     </div>
@@ -157,6 +211,8 @@ const RegisterForm = () => {
                             name="password"
                             style={styles.input}
                             placeholder="••••••••"
+                            value={formData.password}
+                            onChange={handleChange}
                             required
                         />
                     </div>
@@ -168,10 +224,14 @@ const RegisterForm = () => {
                             name="confirmPassword"
                             style={styles.input}
                             placeholder="••••••••"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
                             required
                         />
                     </div>
-                    <button type="submit" style={styles.button}>Register</button>
+                    <button type="submit" style={styles.button} disabled={loading}>
+                        {loading ? 'Creating account…' : 'Register'}
+                    </button>
                 </form>
                 <p style={styles.footerText}>
                     Already have an account? <a href="/login" style={styles.link}>Login here</a>
