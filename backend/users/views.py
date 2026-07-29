@@ -57,3 +57,22 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     
     def get_object(self):
         return self.request.user
+
+
+from .models import MotherProfile, DoctorProfile
+from .serializers import MotherProfileSerializer, DoctorProfileSerializer
+
+class MotherProfileView(generics.RetrieveUpdateAPIView):
+    serializer_class = MotherProfileSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user.mother_profile
+
+
+class DoctorProfileView(generics.RetrieveUpdateAPIView):
+    serializer_class = DoctorProfileSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return self.request.user.doctor_profile
