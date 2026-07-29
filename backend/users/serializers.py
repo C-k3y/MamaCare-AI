@@ -48,3 +48,20 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'role': self.user.role,
         }
         return data
+
+
+from .models import MotherProfile, DoctorProfile
+
+class MotherProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MotherProfile
+        fields = '__all__'
+        read_only_fields = ('user',)
+
+
+class DoctorProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DoctorProfile
+        fields = '__all__'
+        read_only_fields = ('user', 'is_verified')
+
