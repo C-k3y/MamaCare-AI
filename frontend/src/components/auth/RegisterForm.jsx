@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from "../../context/AuthContext";
 import { authService } from "../../services/authService";
 
@@ -234,7 +234,7 @@ const RegisterForm = () => {
                     </button>
                 </form>
                 <p style={styles.footerText}>
-                    Already have an account? <a href="/login" style={styles.link}>Login here</a>
+                    Already have an account? <Link to="/login" style={styles.link}>Login here</Link>
                 </p>
             </div>
         </div>

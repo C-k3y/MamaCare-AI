@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 
@@ -198,22 +199,22 @@ const Home = () => {
                         MamaCare AI supports mothers from conception through postpartum with personalized health tracking, smart nutrition plans, and 24/7 AI assistance.
                     </p>
                     <div style={styles.heroCta}>
-                        <a
-                            href="/register"
+                        <Link
+                            to="/register"
                             style={styles.btnPrimary}
                             onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(251, 111, 146, 0.5)'; }}
                             onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 25px rgba(251, 111, 146, 0.4)'; }}
                         >
                             Get Started Free
-                        </a>
-                        <a
-                            href="/about"
+                        </Link>
+                        <Link
+                            to="/about"
                             style={styles.btnSecondary}
                             onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                             onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
                         >
                             Learn More
-                        </a>
+                        </Link>
                     </div>
                 </section>
 

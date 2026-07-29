@@ -1,10 +1,19 @@
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 // DoctorLayout is used for the doctor-facing portal/dashboard.
 // It shares a similar structure to DashboardLayout but uses a
 // teal/blue color theme to visually distinguish it from the patient view.
 
 const DoctorLayout = ({ children, pageTitle = 'Doctor Portal' }) => {
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
     const menuItems = [
         { id: 'overview', label: 'Overview', icon: '📊' },
         { id: 'patients', label: 'Patients', icon: '👩‍⚕️' },
@@ -141,9 +150,9 @@ const DoctorLayout = ({ children, pageTitle = 'Doctor Portal' }) => {
                 </div>
                 <nav style={styles.menuList}>
                     {menuItems.map(item => (
-                        <a
+                        <Link
                             key={item.id}
-                            href={`/doctor/${item.id}`}
+                            to={`/doctor/${item.id}`}
                             style={styles.menuItem(false)}
                             onMouseOver={e => {
                                 e.currentTarget.style.color = 'white';
@@ -156,10 +165,10 @@ const DoctorLayout = ({ children, pageTitle = 'Doctor Portal' }) => {
                         >
                             <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
                             {item.label}
-                        </a>
+                        </Link>
                     ))}
                 </nav>
-                <button style={styles.logoutBtn}>
+                <button style={styles.logoutBtn} onClick={handleLogout}>
                     <span>🚪</span> Logout
                 </button>
             </aside>

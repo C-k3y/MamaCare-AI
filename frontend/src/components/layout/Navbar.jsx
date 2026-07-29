@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
     const styles = {
@@ -54,15 +55,15 @@ const Navbar = () => {
 
     return (
         <nav style={styles.nav}>
-            <a href="/" style={styles.logo}>
+            <Link to="/" style={styles.logo}>
                 <span>🩺</span> MamaCare AI
-            </a>
+            </Link>
             <div style={styles.links}>
                 <a href="#features" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#4a5568'}>Features</a>
                 <a href="#about" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#4a5568'}>About</a>
                 <a href="#pricing" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#4a5568'}>Pricing</a>
-                <a 
-                    href="/login" 
+                <Link 
+                    to="/login" 
                     style={styles.loginBtn}
                     onMouseOver={e => {
                         e.target.style.background = '#fb6f92';
@@ -74,7 +75,7 @@ const Navbar = () => {
                     }}
                 >
                     Login
-                </a>
+                </Link>
             </div>
         </nav>
     );

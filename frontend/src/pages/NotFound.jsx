@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const NotFound = () => {
     const s = {
@@ -20,7 +21,7 @@ const NotFound = () => {
                 <h2 style={s.title}>Page Not Found</h2>
                 <p style={s.desc}>Oops! It seems this page went into labor early. The page you're looking for doesn't exist or has been moved.</p>
                 <div>
-                    <a href="/" style={s.btnHome}>Go Home</a>
+                    <Link to="/" style={s.btnHome}>Go Home</Link>
                     <a href="#" onClick={() => window.history.back()} style={s.btnBack}>Go Back</a>
                 </div>
             </div>

@@ -1,6 +1,15 @@
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const Sidebar = ({ activeTab = 'dashboard' }) => {
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', icon: '📊' },
         { id: 'appointments', label: 'Appointments', icon: '📅' },
@@ -82,9 +91,9 @@ const Sidebar = ({ activeTab = 'dashboard' }) => {
             
             <nav style={styles.menuList}>
                 {menuItems.map(item => (
-                    <a 
+                    <Link 
                         key={item.id} 
-                        href={`/${item.id}`} 
+                        to={`/${item.id}`} 
                         style={styles.menuItem(activeTab === item.id)}
                         onMouseOver={(e) => {
                             if (activeTab !== item.id) {
@@ -101,11 +110,11 @@ const Sidebar = ({ activeTab = 'dashboard' }) => {
                     >
                         <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
                         {item.label}
-                    </a>
+                    </Link>
                 ))}
             </nav>
 
-            <button style={styles.logoutBtn}>
+            <button style={styles.logoutBtn} onClick={handleLogout}>
                 <span>🚪</span> Logout
             </button>
         </aside>

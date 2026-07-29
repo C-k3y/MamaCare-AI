@@ -1,6 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { authService } from "../../services/authService";
 
 const LoginForm = () => {
+    const navigate = useNavigate();
+    const { login } = useAuth();
+    const [formData, setFormData] = useState({ email: '', password: '' });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+        try {
+            const data = await authService.login(formData);
+            const token = data.token || data.access_token;
+            const role = data.role || data.user?.role || 'patient';
+            login(token, role);
+            navigate('/dashboard');
+        } catch (err) {
+            setError(err.message || 'Login failed.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Define all styles inside this object for inline usage
     const styles = {
         page: {
@@ -85,22 +116,23 @@ const LoginForm = () => {
         <div style={styles.page}>
             <div style={styles.container}>
                 <h1 style={styles.title}>Login</h1>
-                <form action="" onSubmit={(e) => e.preventDefault()}>
+                <form onSubmit={handleSubmit}>
+                    {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
                     <div style={styles.formGroup}>
                         <label htmlFor="email" style={styles.label}>Email:</label>
-                        <input type="email" id="email" name="email" style={styles.input} required />
+                        <input type="email" id="email" name="email" style={styles.input} value={formData.email} onChange={handleChange} required />
                     </div>
                     <div style={styles.formGroup}>
                         <label htmlFor="password" style={styles.label}>Password:</label>
-                        <input type="password" id="password" name="password" style={styles.input} required />
+                        <input type="password" id="password" name="password" style={styles.input} value={formData.password} onChange={handleChange} required />
                     </div>
-                    <button type="submit" style={styles.button}>Login</button>
+                    <button type="submit" style={styles.button} disabled={loading}>{loading ? 'Logging in...' : 'Login'}</button>
                 </form>
                 <p style={styles.footerText}>
-                    Don't have an account? <a href="/register" style={styles.link}>Register here</a>
+                    Don't have an account? <Link to="/register" style={styles.link}>Register here</Link>
                 </p>
                 <p style={styles.footerText}>
-                    <a href="/forgot-password" style={styles.link}>Forgot your password?</a>
+                    <Link to="/forgot-password" style={styles.link}>Forgot your password?</Link>
                 </p>
             </div>
         </div>

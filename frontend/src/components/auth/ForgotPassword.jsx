@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 
 const ForgotPassword = () => {
     // Define all styles inside this object for inline usage
@@ -108,7 +109,7 @@ const ForgotPassword = () => {
                     <button type="submit" style={styles.button}>Reset Password</button>
                 </form>
                 <p style={styles.footerText}>
-                    Don't have an account? <a href="/register" style={styles.link}>Register here</a>
+                    Don't have an account? <Link to="/register" style={styles.link}>Register here</Link>
                 </p>
             </div>
         </div>

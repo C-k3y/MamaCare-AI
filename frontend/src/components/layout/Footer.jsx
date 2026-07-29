@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
     const styles = {
@@ -43,9 +44,9 @@ const Footer = () => {
             </div>
             
             <div style={styles.links}>
-                <a href="/privacy" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#718096'}>Privacy Policy</a>
-                <a href="/terms" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#718096'}>Terms of Service</a>
-                <a href="/contact" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#718096'}>Contact Us</a>
+                <Link to="/privacy" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#718096'}>Privacy Policy</Link>
+                <Link to="/terms" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#718096'}>Terms of Service</Link>
+                <Link to="/contact" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#718096'}>Contact Us</Link>
             </div>
             
             <div>
