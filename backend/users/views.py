@@ -76,3 +76,38 @@ class DoctorProfileView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user.doctor_profile
+
+
+from .permissions import IsAdmin
+
+class PendingDoctorsListView(generics.ListAPIView):
+    """
+    List all doctors that have not been verified yet.
+    """
+    serializer_class = DoctorProfileSerializer
+    permission_classes = (IsAdmin,)
+
+    def get_queryset(self):
+        return DoctorProfile.objects.filter(is_verified=False)
+
+
+class VerifyDoctorView(APIView):
+    """
+    Approve a doctor by setting is_verified = True.
+    """
+    permission_classes = (IsAdmin,)
+
+    def post(self, request, pk):
+        try:
+            doctor_profile = DoctorProfile.objects.get(pk=pk)
+            doctor_profile.is_verified = True
+            doctor_profile.save()
+            return Response(
+                {"detail": f"Doctor {doctor_profile.user.email} has been verified successfully."},
+                status=status.HTTP_200_OK
+            )
+        except DoctorProfile.DoesNotExist:
+            return Response(
+                {"detail": "Doctor profile not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
