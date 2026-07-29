@@ -4,7 +4,9 @@ from .views import (
     RegisterView,
     CustomTokenObtainPairView,
     LogoutView,
-    UserProfileView
+    UserProfileView,
+    MotherProfileView,
+    DoctorProfileView
 )
 
 urlpatterns = [
@@ -13,4 +15,6 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('profile/', UserProfileView.as_view(), name='user_profile'),
+    path('profile/mother/', MotherProfileView.as_view(), name='mother_profile'),
+    path('profile/doctor/', DoctorProfileView.as_view(), name='doctor_profile'),
 ]
