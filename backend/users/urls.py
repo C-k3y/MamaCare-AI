@@ -6,7 +6,9 @@ from .views import (
     LogoutView,
     UserProfileView,
     MotherProfileView,
-    DoctorProfileView
+    DoctorProfileView,
+    PendingDoctorsListView,
+    VerifyDoctorView
 )
 
 urlpatterns = [
@@ -17,4 +19,8 @@ urlpatterns = [
     path('profile/', UserProfileView.as_view(), name='user_profile'),
     path('profile/mother/', MotherProfileView.as_view(), name='mother_profile'),
     path('profile/doctor/', DoctorProfileView.as_view(), name='doctor_profile'),
+    
+    # Admin Doctor Verification Endpoints
+    path('admin/doctors/pending/', PendingDoctorsListView.as_view(), name='pending_doctors'),
+    path('admin/doctors/<int:pk>/verify/', VerifyDoctorView.as_view(), name='verify_doctor'),
 ]
