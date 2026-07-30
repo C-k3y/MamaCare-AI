@@ -3,7 +3,7 @@
  * Used by AuthContext, PrivateRoute, and RoleProtectedRoute.
  */
 export const ROLES = {
-    PATIENT: 'patient',
+    PATIENT: 'mother',
     DOCTOR: 'doctor',
     ADMIN: 'admin',
 };
