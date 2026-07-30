@@ -22,8 +22,8 @@ const LoginForm = () => {
         try {
             const data = await authService.login(formData);
             const token = data.token || data.access_token;
-            const role = data.role || data.user?.role || 'patient';
-            login(token, role);
+            const role = data.role || data.user?.role || 'mother';
+            login(token, role, data.refresh);
             navigate('/dashboard');
         } catch (err) {
             setError(err.message || 'Login failed.');
