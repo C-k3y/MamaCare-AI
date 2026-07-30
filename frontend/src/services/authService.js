@@ -1,62 +1,49 @@
-// ─── MOCK MODE ──────────────────────────────────────────────────────────────
-// No backend is running yet. These mocks simulate API responses locally so the
-// frontend can be developed and tested end-to-end.
-// When a real backend is ready, delete the mock functions below and uncomment
-// the real fetch calls.
-// ────────────────────────────────────────────────────────────────────────────
-
-const mockDelay = (ms = 800) => new Promise((res) => setTimeout(res, ms));
+import axiosInstance from '../api/axios';
 
 /**
- * Service for authentication-related requests
+ * Service for authentication-related requests to the Django backend
  */
 export const authService = {
     login: async (credentials) => {
-        await mockDelay();
-        // Simulate a successful login for any non-empty credentials
-        if (!credentials.email || !credentials.password) {
-            throw new Error('Email and password are required.');
-        }
+        const res = await axiosInstance.post('/users/login/', credentials);
         return {
-            token: 'mock-jwt-token-' + Date.now(),
-            role: 'patient',
-            user: { name: credentials.email.split('@')[0], email: credentials.email, role: 'patient' }
+            token: res.data.access,
+            refresh: res.data.refresh,
+            role: res.data.user.role,
+            user: res.data.user
         };
-
-        /* ── Real implementation (uncomment when backend is ready) ──
-        const res = await fetch(API_ROUTES.AUTH.LOGIN, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(credentials)
-        });
-        if (!res.ok) throw new Error('Login failed');
-        return await res.json();
-        */
     },
 
     register: async (userData) => {
-        await mockDelay();
-        // Simulate a successful registration for any valid payload
-        if (!userData.name || !userData.email || !userData.password) {
-            throw new Error('All fields are required.');
-        }
-        return {
-            token: 'mock-jwt-token-' + Date.now(),
-            role: 'patient',
-            user: { name: userData.name, email: userData.email, role: 'patient' }
+        // Mapping frontend payload to backend expected fields
+        const payload = {
+            username: userData.name.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000), // Auto-generate simple username
+            email: userData.email,
+            password: userData.password,
+            first_name: userData.name.split(' ')[0],
+            last_name: userData.name.split(' ').slice(1).join(' '),
+            role: userData.role || 'mother'
         };
 
-        /* ── Real implementation (uncomment when backend is ready) ──
-        const res = await fetch(API_ROUTES.AUTH.REGISTER, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
-        });
-        if (!res.ok) throw new Error('Registration failed');
-        return await res.json();
-        */
+        const res = await axiosInstance.post('/users/register/', payload);
+        return {
+            token: res.data.access,
+            refresh: res.data.refresh,
+            role: res.data.user.role,
+            user: res.data.user
+        };
+    },
+
+    logout: async () => {
+        const refreshToken = localStorage.getItem('refresh_token');
+        if (refreshToken) {
+            try {
+                await axiosInstance.post('/users/logout/', { refresh_token: refreshToken });
+            } catch (error) {
+                console.error("Logout failed on backend", error);
+            }
+        }
     }
 };
 
 export default authService;
-
