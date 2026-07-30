@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ROLES, ROLE_HOME } from '../constants/roles';
 
+import authService from '../services/authService';
+
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -21,16 +23,21 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
-    const login = (newToken, role) => {
+    const login = (newToken, role, refreshToken = null) => {
         localStorage.setItem('token', newToken);
         localStorage.setItem('userRole', role);
+        if (refreshToken) {
+            localStorage.setItem('refresh_token', refreshToken);
+        }
         setToken(newToken);
         setUserRole(role);
         setIsAuthenticated(true);
     };
 
-    const logout = () => {
+    const logout = async () => {
+        await authService.logout();
         localStorage.removeItem('token');
+        localStorage.removeItem('refresh_token');
         localStorage.removeItem('userRole');
         localStorage.removeItem('user'); // clear user data as well
         setToken(null);
