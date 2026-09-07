@@ -28,3 +28,17 @@ class PregnancyRecord(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+class AuditLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='audit_logs')
+    action = models.CharField(max_length=255)
+    module = models.CharField(max_length=100)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    details = models.JSONField(default=dict, blank=True)
+
+    def __str__(self):
+        return f"{self.user.email if self.user else 'System'} - {self.action} on {self.module} at {self.timestamp}"
+
+    class Meta:
+        ordering = ['-timestamp']
