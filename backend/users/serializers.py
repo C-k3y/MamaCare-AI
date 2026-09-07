@@ -65,3 +65,11 @@ class DoctorProfileSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fields = ('user', 'is_verified')
 
+from .models import CHWProfile
+
+class CHWProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CHWProfile
+        fields = '__all__'
+        read_only_fields = ('user', 'is_verified')
+

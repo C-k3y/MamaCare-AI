@@ -5,6 +5,7 @@ class User(AbstractUser):
     ROLE_CHOICES = (
         ('mother', 'Mother'),
         ('doctor', 'Doctor'),
+        ('chw', 'Community Health Worker'),
         ('admin', 'Admin'),
     )
     
@@ -25,6 +26,10 @@ class User(AbstractUser):
     @property
     def is_doctor(self):
         return self.role == 'doctor'
+
+    @property
+    def is_chw(self):
+        return self.role == 'chw'
 
     @property
     def is_platform_admin(self):
@@ -55,3 +60,13 @@ class DoctorProfile(models.Model):
 
     def __str__(self):
         return f"Doctor Profile: {self.user.email}"
+
+class CHWProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='chw_profile')
+    phone_number = models.CharField(max_length=20, blank=True)
+    organization = models.CharField(max_length=255, blank=True)
+    assigned_region = models.CharField(max_length=255, blank=True)
+    is_verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"CHW Profile: {self.user.email}"
