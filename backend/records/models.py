@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from mirage import fields as mirage_fields
 
 User = get_user_model()
 
@@ -16,8 +17,8 @@ class PregnancyRecord(models.Model):
     # Number of pregnancies reaching viable gestational age
     para = models.PositiveIntegerField(default=0)
     
-    # Medical history or previous complications
-    medical_history = models.TextField(blank=True)
+    # Medical history or previous complications - HIPAA/GDPR Encrypted Field
+    medical_history = mirage_fields.EncryptedTextField(blank=True)
     
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
