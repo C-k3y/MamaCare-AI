@@ -13,3 +13,6 @@ DATABASES = {
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Email config for local development
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
