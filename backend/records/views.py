@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from .models import PregnancyRecord, VitalsRecord
-from .serializers import PregnancyRecordSerializer, VitalsRecordSerializer
+from .models import PregnancyRecord, VitalsRecord, MedicalDocument
+from .serializers import PregnancyRecordSerializer, VitalsRecordSerializer, MedicalDocumentSerializer
 from users.permissions import IsMother, IsDoctor
 
 class PregnancyRecordViewSet(viewsets.ModelViewSet):
@@ -39,3 +39,18 @@ class VitalsRecordViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(recorded_by=self.request.user)
+
+class MedicalDocumentViewSet(viewsets.ModelViewSet):
+    serializer_class = MedicalDocumentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'mother':
+            return MedicalDocument.objects.filter(pregnancy__mother=user)
+        elif user.role in ['doctor', 'chw']:
+            return MedicalDocument.objects.all()
+        return MedicalDocument.objects.none()
+
+    def perform_create(self, serializer):
+        serializer.save(uploaded_by=self.request.user)
