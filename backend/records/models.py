@@ -71,6 +71,31 @@ class VitalsRecord(models.Model):
 
 
 
+class MedicalDocument(models.Model):
+    DOCUMENT_TYPES = (
+        ('lab_result', 'Lab Result'),
+        ('ultrasound', 'Ultrasound Scan'),
+        ('prescription', 'Prescription'),
+        ('general', 'General Document'),
+    )
+    
+    pregnancy = models.ForeignKey(PregnancyRecord, on_delete=models.CASCADE, related_name='documents')
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='uploaded_documents')
+    title = models.CharField(max_length=255)
+    document_type = models.CharField(max_length=20, choices=DOCUMENT_TYPES, default='general')
+    
+    # Stores the file in AWS S3 (via django-storages if configured, otherwise local media/)
+    file = models.FileField(upload_to='ehr_documents/%Y/%m/')
+    
+    notes = models.TextField(blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.title} for {self.pregnancy.mother.email}"
+        
+    class Meta:
+        ordering = ['-uploaded_at']
+
 class AuditLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='audit_logs')
     action = models.CharField(max_length=255)
