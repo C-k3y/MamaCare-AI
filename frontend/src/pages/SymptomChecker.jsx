@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
+import { aiApi } from '../api/aiApi';
 
 const symptoms = [
     { id: 'headache', label: 'Headache', icon: '🤕' },
@@ -31,10 +32,24 @@ const SymptomChecker = () => {
 
     const toggle = (id) => setSelected(p => p.includes(id) ? p.filter(s => s !== id) : [...p, id]);
 
-    const analyze = () => {
+    const analyze = async () => {
         if (selected.length === 0) return;
-        const hasUrgent = selected.some(s => adviceMap[s]?.urgent);
-        setResult({ urgent: hasUrgent, advice: selected.map(s => adviceMap[s]).filter(Boolean) });
+        setResult({ loading: true });
+        try {
+            const response = await aiApi.checkSymptoms(selected);
+            const hasUrgent = selected.some(s => adviceMap[s]?.urgent);
+            setResult({ 
+                loading: false, 
+                urgent: hasUrgent, 
+                advice: selected.map(s => adviceMap[s]).filter(Boolean),
+                backendAssessment: response.data.assessment 
+            });
+        } catch (error) {
+            console.error('Failed to get symptom check from backend:', error);
+            // Fallback to local
+            const hasUrgent = selected.some(s => adviceMap[s]?.urgent);
+            setResult({ loading: false, urgent: hasUrgent, advice: selected.map(s => adviceMap[s]).filter(Boolean) });
+        }
     };
 
     const s = {
@@ -83,6 +98,12 @@ const SymptomChecker = () => {
                     {result && (
                         <div style={s.card}>
                             <h2 style={s.cardTitle}>AI Analysis</h2>
+                            {result.backendAssessment && (
+                                <div style={{ padding: '16px', background: 'rgba(251,111,146,0.1)', borderRadius: '16px', marginBottom: '20px' }}>
+                                    <h3 style={{ margin: '0 0 8px 0', fontSize: '1rem', color: '#1a202c' }}>AI Assessment</h3>
+                                    <p style={{ margin: 0, fontSize: '0.95rem', color: '#4a5568' }}>{result.backendAssessment}</p>
+                                </div>
+                            )}
                             {result.urgent && (
                                 <div style={s.urgentAlert}>
                                     <span style={{ fontSize: '1.3rem' }}>⚠️</span>
