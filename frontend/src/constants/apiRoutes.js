@@ -1,15 +1,15 @@
 /**
  * API Route Constants
  */
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export const API_ROUTES = {
     AUTH: {
-        LOGIN: `${API_BASE_URL}/auth/login`,
-        REGISTER: `${API_BASE_URL}/auth/register`,
-        FORGOT_PASSWORD: `${API_BASE_URL}/auth/forgot-password`,
-        RESET_PASSWORD: `${API_BASE_URL}/auth/reset-password`,
-        ME: `${API_BASE_URL}/auth/me`
+        LOGIN: `${API_BASE_URL}/users/login/`,
+        REGISTER: `${API_BASE_URL}/users/register/`,
+        FORGOT_PASSWORD: `${API_BASE_URL}/users/request-reset-email/`,
+        RESET_PASSWORD: `${API_BASE_URL}/users/password-reset-complete/`,
+        ME: `${API_BASE_URL}/users/profile/`
     },
     USERS: {
         PROFILE: `${API_BASE_URL}/users/profile`,

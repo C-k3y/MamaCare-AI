@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from .models import PregnancyRecord
-from .serializers import PregnancyRecordSerializer
+from .models import PregnancyRecord, VitalsRecord
+from .serializers import PregnancyRecordSerializer, VitalsRecordSerializer
 from users.permissions import IsMother, IsDoctor
 
 class PregnancyRecordViewSet(viewsets.ModelViewSet):
@@ -24,3 +24,18 @@ class PregnancyRecordViewSet(viewsets.ModelViewSet):
         # Alternatively, a doctor might create it for her (requires additional logic).
         # We default to assigning the record to the currently logged in mother.
         serializer.save(mother=self.request.user)
+
+class VitalsRecordViewSet(viewsets.ModelViewSet):
+    serializer_class = VitalsRecordSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'mother':
+            return VitalsRecord.objects.filter(pregnancy__mother=user)
+        elif user.role in ['doctor', 'chw']:
+            return VitalsRecord.objects.all()
+        return VitalsRecord.objects.none()
+
+    def perform_create(self, serializer):
+        serializer.save(recorded_by=self.request.user)

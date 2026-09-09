@@ -24,11 +24,52 @@ class PregnancyRecord(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    from datetime import date
+    @property
+    def gestational_age_weeks(self):
+        if self.lmp:
+            delta = date.today() - self.lmp
+            return delta.days // 7
+        return None
+
+    @property
+    def trimester(self):
+        weeks = self.gestational_age_weeks
+        if weeks is None:
+            return None
+        if weeks < 13:
+            return 1
+        elif weeks < 27:
+            return 2
+        else:
+            return 3
+
     def __str__(self):
         return f"Pregnancy Record for {self.mother.email} (EDD: {self.edd})"
 
     class Meta:
         ordering = ['-created_at']
+
+class VitalsRecord(models.Model):
+    pregnancy = models.ForeignKey(PregnancyRecord, on_delete=models.CASCADE, related_name='vitals')
+    recorded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='recorded_vitals')
+    
+    blood_pressure_systolic = models.PositiveIntegerField(null=True, blank=True)
+    blood_pressure_diastolic = models.PositiveIntegerField(null=True, blank=True)
+    weight_kg = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    blood_glucose_mg_dl = models.PositiveIntegerField(null=True, blank=True)
+    fetal_movement_count = models.PositiveIntegerField(null=True, blank=True)
+    
+    notes = models.TextField(blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Vitals for {self.pregnancy.mother.email} at {self.timestamp}"
+        
+    class Meta:
+        ordering = ['-timestamp']
+
+
 
 class AuditLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='audit_logs')

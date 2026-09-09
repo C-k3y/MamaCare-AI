@@ -33,6 +33,12 @@ INSTALLED_APPS = [
     # Local apps
     'users',
     'records',
+    'appointments',
+    'nutrition',
+    'pregnancy',
+    'emergency',
+    'ai_services',
+    'communications',
 ]
 
 MIDDLEWARE = [
