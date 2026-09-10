@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 import StatsCard from '../components/dashboard/StatsCard';
@@ -6,6 +6,7 @@ import ActivityTimeline from '../components/dashboard/ActivityTimeline';
 import ReminderCard from '../components/dashboard/ReminderCard';
 import RiskCard from '../components/dashboard/RiskCard';
 import HealthChart from '../components/dashboard/HealthChart';
+import { aiApi } from '../api/aiApi';
 
 const Dashboard = () => {
     const styles = {
@@ -60,6 +61,27 @@ const Dashboard = () => {
     };
 
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    
+    const [riskData, setRiskData] = useState(null);
+    const [riskHistory, setRiskHistory] = useState([]);
+
+    useEffect(() => {
+        const fetchRisks = async () => {
+            try {
+                const response = await aiApi.getRisks();
+                if (response.data && response.data.length > 0) {
+                    setRiskData(response.data[0]);
+                    
+                    // Map risk history for the chart (take up to 7 most recent, reverse for chronological order)
+                    const history = response.data.slice(0, 7).reverse();
+                    setRiskHistory(history);
+                }
+            } catch (error) {
+                console.error("Failed to fetch risk assessment", error);
+            }
+        };
+        fetchRisks();
+    }, []);
 
     return (
         <div style={styles.layout}>
@@ -81,11 +103,23 @@ const Dashboard = () => {
 
                     <div style={styles.threeColGrid}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            <HealthChart />
+                            <HealthChart 
+                                title="Risk Score Trend"
+                                data={riskHistory.length > 0 ? riskHistory.map(r => r.risk_score * 100) : undefined}
+                                labels={riskHistory.length > 0 ? riskHistory.map(r => new Date(r.created_at).toLocaleDateString('en-US', {weekday: 'short'})) : undefined}
+                            />
                             <ActivityTimeline />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            <RiskCard />
+                            <RiskCard 
+                                title="AI Risk Assessment" 
+                                level={riskData ? riskData.risk_level : 'low'} 
+                                description={
+                                    riskData 
+                                    ? `Risk Score: ${(riskData.risk_score * 100).toFixed(1)}%. Model: ${riskData.model_version}.`
+                                    : "Analyzing latest vitals to determine risk profile..."
+                                } 
+                            />
                             <ReminderCard />
                         </div>
                     </div>
