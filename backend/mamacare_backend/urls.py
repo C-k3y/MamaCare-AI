@@ -26,4 +26,5 @@ urlpatterns = [
     path('api/pregnancy/', include('pregnancy.urls')),
     path('api/emergency/', include('emergency.urls')),
     path('api/messages/', include('communications.urls')),
+    path('api/', include('ai_services.urls')),
 ]
