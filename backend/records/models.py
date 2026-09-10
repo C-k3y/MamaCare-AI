@@ -50,15 +50,32 @@ class PregnancyRecord(models.Model):
     class Meta:
         ordering = ['-created_at']
 
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 class VitalsRecord(models.Model):
     pregnancy = models.ForeignKey(PregnancyRecord, on_delete=models.CASCADE, related_name='vitals')
     recorded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='recorded_vitals')
     
-    blood_pressure_systolic = models.PositiveIntegerField(null=True, blank=True)
-    blood_pressure_diastolic = models.PositiveIntegerField(null=True, blank=True)
-    weight_kg = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
-    blood_glucose_mg_dl = models.PositiveIntegerField(null=True, blank=True)
-    fetal_movement_count = models.PositiveIntegerField(null=True, blank=True)
+    blood_pressure_systolic = models.PositiveIntegerField(
+        null=True, blank=True,
+        validators=[MinValueValidator(70), MaxValueValidator(250)]
+    )
+    blood_pressure_diastolic = models.PositiveIntegerField(
+        null=True, blank=True,
+        validators=[MinValueValidator(40), MaxValueValidator(150)]
+    )
+    weight_kg = models.DecimalField(
+        max_digits=5, decimal_places=2, null=True, blank=True,
+        validators=[MinValueValidator(30.0), MaxValueValidator(300.0)]
+    )
+    blood_glucose_mg_dl = models.PositiveIntegerField(
+        null=True, blank=True,
+        validators=[MinValueValidator(40), MaxValueValidator(600)]
+    )
+    fetal_movement_count = models.PositiveIntegerField(
+        null=True, blank=True,
+        validators=[MinValueValidator(0), MaxValueValidator(100)]
+    )
     
     notes = models.TextField(blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
