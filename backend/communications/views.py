@@ -23,14 +23,15 @@ class MessageViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path='symptom-check')
     def symptom_check(self, request):
         symptoms = request.data.get('symptoms', [])
-        # Save user message
-        msg_text = f"I have the following symptoms: {', '.join(symptoms)}"
-        Message.objects.create(sender=request.user, content=msg_text, is_ai=True)
+        free_text = ', '.join(symptoms)
         
-        # Mock AI response
-        ai_response = "Based on your symptoms, I recommend resting and drinking plenty of fluids."
-        if 'bleeding' in symptoms:
-            ai_response = "Please contact your doctor immediately."
-            
-        ai_msg = Message.objects.create(receiver=request.user, sender=request.user, content=ai_response, is_ai=True, is_read=False)
-        return Response({'assessment': ai_response})
+        # Save user message
+        msg_text = f"I have the following symptoms: {free_text}"
+        user_msg = Message.objects.create(sender=request.user, content=msg_text, is_ai=False)
+        
+        # Trigger Celery Task
+        from ai_services.tasks import process_symptom_check
+        process_symptom_check.delay(user_msg.id, free_text)
+        
+        # Return a pending state since the task is async
+        return Response({'assessment': "Your symptoms are being analyzed by our AI. You will receive a message shortly with guidance.", 'status': 'pending'})
