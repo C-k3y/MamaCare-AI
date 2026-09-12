@@ -18,3 +18,16 @@ app.autodiscover_tasks()
 @app.task(bind=True, ignore_result=True)
 def debug_task(self):
     print(f'Request: {self.request!r}')
+
+from celery.schedules import crontab
+
+app.conf.beat_schedule = {
+    'send-appointment-reminders-every-hour': {
+        'task': 'appointments.tasks.send_appointment_reminders',
+        'schedule': crontab(minute=0),
+    },
+    'send-medication-reminders-every-15-mins': {
+        'task': 'appointments.tasks.send_medication_reminders',
+        'schedule': crontab(minute='*/15'),
+    },
+}
