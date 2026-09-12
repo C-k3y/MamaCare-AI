@@ -60,8 +60,8 @@ class DoctorAvailabilityViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.role == 'doctor':
             return DoctorAvailability.objects.filter(doctor=user)
-        # Mothers can see active availabilities of doctors to book
-        return DoctorAvailability.objects.filter(is_active=True)
+        # Mothers can see active availabilities of verified doctors to book
+        return DoctorAvailability.objects.filter(is_active=True, doctor__doctor_profile__is_verified=True)
 
     def perform_create(self, serializer):
         if self.request.user.role == 'doctor':
