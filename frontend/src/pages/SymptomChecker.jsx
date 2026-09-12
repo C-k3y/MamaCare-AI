@@ -95,7 +95,17 @@ const SymptomChecker = () => {
                         </div>
                     </div>
 
-                    {result && (
+                    {result && result.loading && (
+                        <div style={s.card}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 0' }}>
+                                <div style={{ width: '40px', height: '40px', border: '3px solid rgba(251,111,146,0.2)', borderTop: '3px solid #fb6f92', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                                <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+                                <p style={{ marginTop: '16px', color: '#718096', fontWeight: '600' }}>Analyzing symptoms...</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {result && !result.loading && (
                         <div style={s.card}>
                             <h2 style={s.cardTitle}>AI Analysis</h2>
                             {result.backendAssessment && (
