@@ -15,3 +15,17 @@ class AppointmentSerializer(serializers.ModelSerializer):
         model = Appointment
         fields = '__all__'
         read_only_fields = ['mother', 'created_at', 'updated_at']
+
+class DoctorAvailabilitySerializer(serializers.ModelSerializer):
+    class Meta:
+        from .models import DoctorAvailability
+        model = DoctorAvailability
+        fields = '__all__'
+        read_only_fields = ['doctor']
+
+class MedicationReminderSerializer(serializers.ModelSerializer):
+    class Meta:
+        from .models import MedicationReminder
+        model = MedicationReminder
+        fields = '__all__'
+        read_only_fields = ['mother', 'created_at']
