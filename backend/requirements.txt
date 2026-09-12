@@ -21,3 +21,4 @@ scikit-learn==1.5.2
 joblib==1.4.2
 transformers==4.37.2
 torch==2.2.0
+django-celery-beat==2.5.0
