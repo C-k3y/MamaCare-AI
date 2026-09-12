@@ -7,6 +7,7 @@ import ReminderCard from '../components/dashboard/ReminderCard';
 import RiskCard from '../components/dashboard/RiskCard';
 import HealthChart from '../components/dashboard/HealthChart';
 import { aiApi } from '../api/aiApi';
+import { appointmentApi } from '../api/appointmentApi';
 
 const Dashboard = () => {
     const styles = {
@@ -64,23 +65,25 @@ const Dashboard = () => {
     
     const [riskData, setRiskData] = useState(null);
     const [riskHistory, setRiskHistory] = useState([]);
+    const [reminders, setReminders] = useState([]);
 
     useEffect(() => {
-        const fetchRisks = async () => {
+        const fetchData = async () => {
             try {
                 const response = await aiApi.getRisks();
                 if (response.data && response.data.length > 0) {
                     setRiskData(response.data[0]);
-                    
-                    // Map risk history for the chart (take up to 7 most recent, reverse for chronological order)
                     const history = response.data.slice(0, 7).reverse();
                     setRiskHistory(history);
                 }
+                
+                const remRes = await appointmentApi.getReminders();
+                if (remRes.data) setReminders(remRes.data);
             } catch (error) {
-                console.error("Failed to fetch risk assessment", error);
+                console.error("Failed to fetch data", error);
             }
         };
-        fetchRisks();
+        fetchData();
     }, []);
 
     return (
@@ -120,7 +123,13 @@ const Dashboard = () => {
                                     : "Analyzing latest vitals to determine risk profile..."
                                 } 
                             />
-                            <ReminderCard />
+                            {reminders.length === 0 ? <ReminderCard title="No reminders" time="" /> : reminders.map((rem, i) => (
+                                <ReminderCard 
+                                    key={i} 
+                                    title={`Take ${rem.dosage} ${rem.medication_name}`} 
+                                    time={rem.time_of_day} 
+                                />
+                            ))}
                         </div>
                     </div>
                 </div>
