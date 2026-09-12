@@ -48,3 +48,34 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         appointment.status = 'cancelled'
         appointment.save()
         return Response({'status': 'appointment cancelled'})
+
+from .models import DoctorAvailability, MedicationReminder
+from .serializers import DoctorAvailabilitySerializer, MedicationReminderSerializer
+
+class DoctorAvailabilityViewSet(viewsets.ModelViewSet):
+    serializer_class = DoctorAvailabilitySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'doctor':
+            return DoctorAvailability.objects.filter(doctor=user)
+        # Mothers can see active availabilities of doctors to book
+        return DoctorAvailability.objects.filter(is_active=True)
+
+    def perform_create(self, serializer):
+        if self.request.user.role == 'doctor':
+            serializer.save(doctor=self.request.user)
+
+class MedicationReminderViewSet(viewsets.ModelViewSet):
+    serializer_class = MedicationReminderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role == 'mother':
+            return MedicationReminder.objects.filter(mother=user)
+        return MedicationReminder.objects.none()
+
+    def perform_create(self, serializer):
+        serializer.save(mother=self.request.user)
