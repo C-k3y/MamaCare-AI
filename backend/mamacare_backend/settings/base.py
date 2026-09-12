@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'mirage',
     'storages',
+    'django_celery_beat',
 
     # Local apps
     'users',
