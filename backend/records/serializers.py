@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import PregnancyRecord, VitalsRecord, MedicalDocument
+from .models import PregnancyRecord, VitalsRecord, MedicalDocument, AuditLog
+
+class AuditLogSerializer(serializers.ModelSerializer):
+    user_email = serializers.CharField(source='user.email', read_only=True)
+    class Meta:
+        model = AuditLog
+        fields = '__all__'
 
 class VitalsRecordSerializer(serializers.ModelSerializer):
     class Meta:
