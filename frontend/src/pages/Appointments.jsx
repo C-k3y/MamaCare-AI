@@ -122,6 +122,7 @@ const Appointments = () => {
                                     return (
                                         <AppointmentCard 
                                             key={i} 
+                                            appointmentId={appt.id}
                                             doctorName={appt.doctor_details ? `Dr. ${appt.doctor_details.first_name} ${appt.doctor_details.last_name}` : 'Unassigned'} 
                                             specialty={appt.type === 'video' ? 'Telemedicine' : 'In Person'} 
                                             date={dateObj.toLocaleDateString()} 
@@ -138,6 +139,7 @@ const Appointments = () => {
                                     return (
                                         <AppointmentCard 
                                             key={i} 
+                                            appointmentId={appt.id}
                                             doctorName={appt.doctor_details ? `Dr. ${appt.doctor_details.first_name} ${appt.doctor_details.last_name}` : 'Unassigned'} 
                                             specialty={appt.type === 'video' ? 'Telemedicine' : 'In Person'} 
                                             date={dateObj.toLocaleDateString()} 
