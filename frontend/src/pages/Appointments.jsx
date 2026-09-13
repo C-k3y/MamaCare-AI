@@ -3,11 +3,34 @@ import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 import AppointmentCard from '../components/appointments/AppointmentCard';
 import AppointmentModal from '../components/appointments/AppointmentModal';
+import BookAppointmentModal from '../components/appointments/BookAppointmentModal';
 import Calendar from '../components/appointments/Calendar';
 import DoctorCard from '../components/appointments/DoctorCard';
 import { appointmentApi } from '../api/appointmentApi';
 
 const Appointments = () => {
+    // ... skipping styles ...
+    const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+    const [pastAppointments, setPastAppointments] = useState([]);
+    const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+
+    const fetchAppointments = async () => {
+        try {
+            const upcomingRes = await appointmentApi.getUpcoming();
+            setUpcomingAppointments(upcomingRes.data);
+
+            const historyRes = await appointmentApi.getHistory();
+            setPastAppointments(historyRes.data);
+        } catch (error) {
+            console.error("Failed to fetch appointments", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAppointments();
+    }, []);
+
+    // Extract styles object here to satisfy linter/scope
     const styles = {
         layout: {
             display: 'flex',
@@ -73,25 +96,6 @@ const Appointments = () => {
         }
     };
 
-    const [upcomingAppointments, setUpcomingAppointments] = useState([]);
-    const [pastAppointments, setPastAppointments] = useState([]);
-    const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-
-    useEffect(() => {
-        const fetchAppointments = async () => {
-            try {
-                const upcomingRes = await appointmentApi.getUpcoming();
-                setUpcomingAppointments(upcomingRes.data);
-
-                const historyRes = await appointmentApi.getHistory();
-                setPastAppointments(historyRes.data);
-            } catch (error) {
-                console.error("Failed to fetch appointments", error);
-            }
-        };
-        fetchAppointments();
-    }, []);
-
     return (
         <div style={styles.layout}>
             <Sidebar activeTab="appointments" />
@@ -100,8 +104,14 @@ const Appointments = () => {
                 <div style={styles.content}>
                     <div style={styles.pageHeader}>
                         <h1 style={styles.heading}>My Appointments</h1>
-                        <button style={styles.newApptBtn}>+ Book Appointment</button>
+                        <button style={styles.newApptBtn} onClick={() => setIsBookingModalOpen(true)}>+ Book Appointment</button>
                     </div>
+                    
+                    <BookAppointmentModal 
+                        isOpen={isBookingModalOpen} 
+                        onClose={() => setIsBookingModalOpen(false)} 
+                        onBooked={fetchAppointments} 
+                    />
 
                     <div style={styles.gridLayout}>
                         <div>
