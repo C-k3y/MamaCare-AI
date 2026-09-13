@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'mamacare_backend.middleware.AuditLogMiddleware',
 ]
 
 ROOT_URLCONF = 'mamacare_backend.urls'
