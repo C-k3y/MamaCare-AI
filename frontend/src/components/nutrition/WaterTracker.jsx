@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 
-const WaterTracker = ({ targetGlasses = 8 }) => {
-    const [consumed, setConsumed] = useState(3);
+const WaterTracker = ({ targetGlasses = 8, logs = [], onAddWater }) => {
+    // 1 glass = 250ml
+    const totalMl = logs.reduce((sum, log) => sum + log.amount_ml, 0);
+    const consumed = Math.floor(totalMl / 250);
 
     const handleAdd = () => {
-        if (consumed < targetGlasses) setConsumed(c => c + 1);
+        if (onAddWater) {
+            onAddWater();
+        }
     };
 
     const handleRemove = () => {
-        if (consumed > 0) setConsumed(c => c - 1);
+        // Mock remove for now
     };
 
     const styles = {
