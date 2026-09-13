@@ -1,144 +1,193 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 import { aiApi } from '../api/aiApi';
-
-const symptoms = [
-    { id: 'headache', label: 'Headache', icon: '🤕' },
-    { id: 'nausea', label: 'Nausea', icon: '🤢' },
-    { id: 'swelling', label: 'Swelling', icon: '🦵' },
-    { id: 'backpain', label: 'Back Pain', icon: '🔙' },
-    { id: 'fatigue', label: 'Fatigue', icon: '😴' },
-    { id: 'dizziness', label: 'Dizziness', icon: '💫' },
-    { id: 'cramps', label: 'Cramps', icon: '⚡' },
-    { id: 'heartburn', label: 'Heartburn', icon: '🔥' }
-];
-
-const adviceMap = {
-    headache: { severity: 'Moderate', advice: 'Stay hydrated, rest in a quiet room, and apply a cool cloth to your forehead. Consult your doctor if it persists more than 24 hours.', urgent: false },
-    nausea: { severity: 'Mild', advice: 'Eat small, frequent meals. Try ginger tea or crackers. Avoid strong smells. This is normal in early pregnancy.', urgent: false },
-    swelling: { severity: 'Moderate', advice: 'Elevate your feet when resting. Avoid prolonged standing. Sudden or severe swelling, especially in the face, warrants immediate medical attention.', urgent: true },
-    backpain: { severity: 'Mild', advice: 'Gentle stretching and prenatal yoga can help. Use a supportive pillow when sleeping. Consider a warm compress.', urgent: false },
-    fatigue: { severity: 'Mild', advice: 'Rest when you can. Ensure your iron levels are adequate. Stay hydrated and maintain a balanced diet.', urgent: false },
-    dizziness: { severity: 'Moderate', advice: 'Avoid sudden movements. Sit or lie down when dizzy. Ensure you are eating regularly. Seek help if dizziness is severe.', urgent: true },
-    cramps: { severity: 'Moderate', advice: 'Mild cramps can be normal. However, severe or persistent cramping, especially with bleeding, requires immediate medical evaluation.', urgent: true },
-    heartburn: { severity: 'Mild', advice: 'Eat smaller meals, avoid spicy foods, and don\'t lie down immediately after eating. Sleeping with your head elevated can help.', urgent: false }
-};
+import { messagesApi } from '../api/messagesApi';
 
 const SymptomChecker = () => {
-    const [selected, setSelected] = useState([]);
-    const [result, setResult] = useState(null);
-    const [severity, setSeverity] = useState('mild');
+    const [messages, setMessages] = useState([]);
+    const [inputValue, setInputValue] = useState('');
+    const [loading, setLoading] = useState(false);
+    const messagesEndRef = useRef(null);
 
-    const toggle = (id) => setSelected(p => p.includes(id) ? p.filter(s => s !== id) : [...p, id]);
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
 
-    const analyze = async () => {
-        if (selected.length === 0) return;
-        setResult({ loading: true });
+    const fetchMessages = async () => {
         try {
-            const response = await aiApi.checkSymptoms(selected);
-            const hasUrgent = selected.some(s => adviceMap[s]?.urgent);
-            setResult({ 
-                loading: false, 
-                urgent: hasUrgent, 
-                advice: selected.map(s => adviceMap[s]).filter(Boolean),
-                backendAssessment: response.data.assessment 
-            });
-        } catch (error) {
-            console.error('Failed to get symptom check from backend:', error);
-            // Fallback to local
-            const hasUrgent = selected.some(s => adviceMap[s]?.urgent);
-            setResult({ loading: false, urgent: hasUrgent, advice: selected.map(s => adviceMap[s]).filter(Boolean) });
+            const res = await messagesApi.getMessages();
+            // Filter to only show AI-related symptom check messages
+            const chatMessages = res.data.filter(m => m.is_ai || m.content.toLowerCase().includes('symptom') || m.sender === m.receiver);
+            
+            // Sort by created_at ascending
+            const sorted = chatMessages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            setMessages(sorted);
+        } catch (err) {
+            console.error('Failed to fetch messages', err);
         }
     };
 
-    const s = {
-        layout: { display: 'flex', minHeight: '100vh', background: 'linear-gradient(135deg, #fff5f7 0%, #ffe5ec 100%)', fontFamily: "'Inter', system-ui, sans-serif" },
-        main: { marginLeft: '280px', flex: 1, display: 'flex', flexDirection: 'column' },
-        content: { padding: '32px', flex: 1, maxWidth: '860px' },
-        heading: { margin: '0 0 4px 0', fontSize: '1.75rem', fontWeight: '800', color: '#1a202c' },
-        sub: { margin: '0 0 32px 0', fontSize: '1rem', color: '#718096' },
-        card: { background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(16px)', borderRadius: '24px', padding: '28px', boxShadow: '0 8px 32px rgba(251,111,146,0.08)', border: '1px solid rgba(255,255,255,0.6)', marginBottom: '24px' },
-        cardTitle: { margin: '0 0 20px 0', fontSize: '1.1rem', fontWeight: '700', color: '#1a202c' },
-        sympGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(160px,1fr))', gap: '12px' },
-        sympBtn: (active) => ({ padding: '16px', borderRadius: '16px', border: active ? '2px solid #fb6f92' : '2px solid #edf2f7', background: active ? 'rgba(251,111,146,0.08)' : 'white', cursor: 'pointer', textAlign: 'center', fontFamily: "'Inter', system-ui, sans-serif", transition: 'all 0.2s' }),
-        sympIcon: { fontSize: '1.6rem', display: 'block', marginBottom: '8px' },
-        sympLabel: { margin: 0, fontWeight: '600', fontSize: '0.9rem', color: '#2d3748' },
-        analyzeBtn: { width: '100%', padding: '14px', borderRadius: '16px', background: selected.length > 0 ? 'linear-gradient(135deg,#ff8fab,#fb6f92)' : '#edf2f7', color: selected.length > 0 ? 'white' : '#a0aec0', border: 'none', fontWeight: '700', fontSize: '1rem', cursor: selected.length > 0 ? 'pointer' : 'not-allowed', boxShadow: selected.length > 0 ? '0 4px 15px rgba(251,111,146,0.3)' : 'none', fontFamily: "'Inter', system-ui, sans-serif", marginTop: '4px' },
-        urgentAlert: { background: 'rgba(229,62,62,0.08)', border: '1px solid rgba(229,62,62,0.25)', borderRadius: '16px', padding: '16px 20px', marginBottom: '16px', display: 'flex', gap: '12px', alignItems: 'flex-start' },
-        adviceItem: { padding: '16px 0', borderBottom: '1px solid #edf2f7' }
+    useEffect(() => {
+        fetchMessages();
+        // Simple polling to get AI response (since celery is async)
+        const interval = setInterval(fetchMessages, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    const handleSend = async (e) => {
+        e.preventDefault();
+        if (!inputValue.trim()) return;
+
+        const userMsg = inputValue;
+        setInputValue('');
+        setLoading(true);
+
+        // Optimistically add user message to UI
+        const tempMsg = {
+            id: Date.now(),
+            content: userMsg,
+            is_ai: false,
+            created_at: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, tempMsg]);
+
+        try {
+            await aiApi.checkSymptoms(userMsg);
+            // Fetch immediately, but AI response might take a few seconds (polled)
+            await fetchMessages();
+        } catch (err) {
+            console.error('Failed to send symptom check', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const styles = {
+        layout: { display: 'flex', height: '100vh', background: '#f8fafc', fontFamily: "'Inter', system-ui, sans-serif" },
+        main: { marginLeft: '280px', flex: 1, display: 'flex', flexDirection: 'column', height: '100vh' },
+        chatContainer: { 
+            flex: 1, 
+            display: 'flex', 
+            flexDirection: 'column', 
+            maxWidth: '900px', 
+            margin: '0 auto', 
+            width: '100%',
+            padding: '24px',
+            boxSizing: 'border-box'
+        },
+        header: { marginBottom: '20px', textAlign: 'center' },
+        title: { fontSize: '1.75rem', fontWeight: '800', color: '#1a202c', margin: '0 0 8px 0' },
+        subtitle: { fontSize: '1rem', color: '#718096', margin: 0 },
+        messageList: { 
+            flex: 1, 
+            overflowY: 'auto', 
+            padding: '20px', 
+            background: 'white', 
+            borderRadius: '24px', 
+            boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+            marginBottom: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px'
+        },
+        messageRow: (isAi) => ({
+            display: 'flex',
+            justifyContent: isAi ? 'flex-start' : 'flex-end',
+            width: '100%'
+        }),
+        messageBubble: (isAi) => ({
+            maxWidth: '70%',
+            padding: '14px 20px',
+            borderRadius: '20px',
+            background: isAi ? '#f1f5f9' : 'linear-gradient(135deg, #ff8fab 0%, #fb6f92 100%)',
+            color: isAi ? '#1a202c' : 'white',
+            borderBottomLeftRadius: isAi ? '4px' : '20px',
+            borderBottomRightRadius: isAi ? '20px' : '4px',
+            fontSize: '0.95rem',
+            lineHeight: '1.5'
+        }),
+        inputForm: {
+            display: 'flex',
+            gap: '12px',
+            background: 'white',
+            padding: '16px',
+            borderRadius: '20px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.03)'
+        },
+        input: {
+            flex: 1,
+            border: '1px solid #e2e8f0',
+            borderRadius: '12px',
+            padding: '14px',
+            fontSize: '1rem',
+            outline: 'none',
+            fontFamily: 'inherit'
+        },
+        sendBtn: {
+            background: '#fb6f92',
+            color: 'white',
+            border: 'none',
+            borderRadius: '12px',
+            padding: '0 24px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'background 0.2s'
+        }
     };
 
     return (
-        <div style={s.layout}>
-            <Sidebar />
-            <div style={s.main}>
+        <div style={styles.layout}>
+            <Sidebar activeTab="symptom-checker" />
+            <div style={styles.main}>
                 <DashboardNavbar />
-                <div style={s.content}>
-                    <h1 style={s.heading}>Symptom Checker</h1>
-                    <p style={s.sub}>Select your symptoms and get AI-powered guidance tailored to your pregnancy.</p>
-
-                    <div style={s.card}>
-                        <h2 style={s.cardTitle}>What are you experiencing?</h2>
-                        <div style={s.sympGrid}>
-                            {symptoms.map(sym => (
-                                <button key={sym.id} style={s.sympBtn(selected.includes(sym.id))} onClick={() => toggle(sym.id)}>
-                                    <span style={s.sympIcon}>{sym.icon}</span>
-                                    <p style={{ ...s.sympLabel, color: selected.includes(sym.id) ? '#fb6f92' : '#2d3748' }}>{sym.label}</p>
-                                </button>
-                            ))}
-                        </div>
-                        <div style={{ marginTop: '24px' }}>
-                            <button style={s.analyzeBtn} onClick={analyze}>
-                                {selected.length > 0 ? `Analyze ${selected.length} Symptom${selected.length > 1 ? 's' : ''}` : 'Select symptoms to analyze'}
-                            </button>
-                        </div>
+                <div style={styles.chatContainer}>
+                    <div style={styles.header}>
+                        <h1 style={styles.title}>AI Symptom Triage</h1>
+                        <p style={styles.subtitle}>Describe how you're feeling and our AI will advise if you should see a doctor.</p>
                     </div>
 
-                    {result && result.loading && (
-                        <div style={s.card}>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 0' }}>
-                                <div style={{ width: '40px', height: '40px', border: '3px solid rgba(251,111,146,0.2)', borderTop: '3px solid #fb6f92', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                                <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
-                                <p style={{ marginTop: '16px', color: '#718096', fontWeight: '600' }}>Analyzing symptoms...</p>
+                    <div style={styles.messageList}>
+                        {messages.length === 0 && (
+                            <div style={{ textAlign: 'center', color: '#a0aec0', marginTop: '40px' }}>
+                                <span style={{ fontSize: '3rem' }}>💬</span>
+                                <p>No messages yet. Describe your symptoms below!</p>
                             </div>
-                        </div>
-                    )}
+                        )}
+                        {messages.map((msg) => (
+                            <div key={msg.id} style={styles.messageRow(msg.is_ai)}>
+                                <div style={styles.messageBubble(msg.is_ai)}>
+                                    {msg.content}
+                                </div>
+                            </div>
+                        ))}
+                        {loading && (
+                            <div style={styles.messageRow(true)}>
+                                <div style={styles.messageBubble(true)}>
+                                    <em>Analyzing...</em>
+                                </div>
+                            </div>
+                        )}
+                        <div ref={messagesEndRef} />
+                    </div>
 
-                    {result && !result.loading && (
-                        <div style={s.card}>
-                            <h2 style={s.cardTitle}>AI Analysis</h2>
-                            {result.backendAssessment && (
-                                <div style={{ padding: '16px', background: 'rgba(251,111,146,0.1)', borderRadius: '16px', marginBottom: '20px' }}>
-                                    <h3 style={{ margin: '0 0 8px 0', fontSize: '1rem', color: '#1a202c' }}>AI Assessment</h3>
-                                    <p style={{ margin: 0, fontSize: '0.95rem', color: '#4a5568' }}>{result.backendAssessment}</p>
-                                </div>
-                            )}
-                            {result.urgent && (
-                                <div style={s.urgentAlert}>
-                                    <span style={{ fontSize: '1.3rem' }}>⚠️</span>
-                                    <div>
-                                        <p style={{ margin: '0 0 4px 0', fontWeight: '700', color: '#e53e3e' }}>Some symptoms may need medical attention</p>
-                                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#718096' }}>Please contact your healthcare provider or visit the nearest clinic if symptoms are severe.</p>
-                                    </div>
-                                </div>
-                            )}
-                            {result.advice.map((a, i) => {
-                                const sym = symptoms.find(s => adviceMap[s.id] === a);
-                                return (
-                                    <div key={i} style={{ ...s.adviceItem, borderBottom: i < result.advice.length - 1 ? '1px solid #edf2f7' : 'none' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                                            <span style={{ fontSize: '1.1rem' }}>{sym?.icon}</span>
-                                            <p style={{ margin: 0, fontWeight: '700', color: '#1a202c' }}>{sym?.label}</p>
-                                            <span style={{ marginLeft: 'auto', padding: '3px 10px', borderRadius: '100px', fontSize: '0.78rem', fontWeight: '700', background: a.urgent ? 'rgba(229,62,62,0.1)' : 'rgba(56,161,105,0.1)', color: a.urgent ? '#e53e3e' : '#38a169' }}>{a.severity}</span>
-                                        </div>
-                                        <p style={{ margin: 0, fontSize: '0.92rem', color: '#718096', lineHeight: '1.6' }}>{a.advice}</p>
-                                    </div>
-                                );
-                            })}
-                            <p style={{ margin: '20px 0 0 0', fontSize: '0.82rem', color: '#a0aec0', fontStyle: 'italic' }}>⚕️ This is not a medical diagnosis. Always consult a qualified healthcare professional.</p>
-                        </div>
-                    )}
+                    <form style={styles.inputForm} onSubmit={handleSend}>
+                        <input 
+                            type="text" 
+                            style={styles.input} 
+                            placeholder="e.g. I have a severe headache and some nausea..." 
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            disabled={loading}
+                        />
+                        <button type="submit" style={styles.sendBtn} disabled={loading || !inputValue.trim()}>
+                            Send
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
