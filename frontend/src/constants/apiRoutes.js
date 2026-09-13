@@ -44,6 +44,11 @@ export const API_ROUTES = {
     REPORTS: {
         BASE: `${API_BASE_URL}/reports`,
         DOWNLOAD: (id) => `${API_BASE_URL}/reports/${id}/download`
+    },
+    RECORDS: {
+        PREGNANCIES: `${API_BASE_URL}/records/pregnancies/`,
+        VITALS: `${API_BASE_URL}/records/vitals/`,
+        DOCUMENTS: `${API_BASE_URL}/records/documents/`
     }
 };
 
