@@ -1,8 +1,10 @@
 import React from 'react';
 
-const WeightTracker = ({ currentWeight = 145, startingWeight = 138, unit = 'lbs' }) => {
-    const gained = currentWeight - startingWeight;
-    const isHealthyGain = gained >= 0 && gained <= 10; // Mock logic for demo
+const WeightTracker = ({ vitals = [], startingWeight = 65.0, unit = 'kg' }) => {
+    const latestWeight = vitals.find(v => v.weight_kg);
+    const currentWeight = latestWeight ? parseFloat(latestWeight.weight_kg) : startingWeight;
+    const gained = (currentWeight - startingWeight).toFixed(1);
+    const isHealthyGain = gained >= 0 && gained <= 15; // Mock logic
 
     const styles = {
         container: {
