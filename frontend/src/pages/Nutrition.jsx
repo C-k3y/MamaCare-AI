@@ -1,12 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 import MealCard from '../components/nutrition/MealCard';
 import NutritionChart from '../components/nutrition/NutritionChart';
 import DailyCalories from '../components/nutrition/DailyCalories';
 import WaterTracker from '../components/nutrition/WaterTracker';
+import { nutritionApi } from '../api/nutritionApi';
 
 const Nutrition = () => {
+    const [meals, setMeals] = useState([]);
+    const [waterLogs, setWaterLogs] = useState([]);
+
+    const fetchData = async () => {
+        try {
+            const mealRes = await nutritionApi.getNutritionLogs();
+            setMeals(mealRes.data);
+            const waterRes = await nutritionApi.getWaterLogs();
+            setWaterLogs(waterRes.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const handleAddWater = async () => {
+        try {
+            await nutritionApi.logWater(250); // 1 glass = 250ml
+            fetchData();
+        } catch (err) {
+            console.error("Failed to log water");
+        }
+    };
     const styles = {
         layout: {
             display: 'flex',
@@ -77,17 +104,22 @@ const Nutrition = () => {
                         <div>
                             <div style={styles.card}>
                                 <h2 style={styles.sectionTitle}>Today's Meals</h2>
-                                <MealCard type="Breakfast" time="8:00 AM" items={['Oatmeal with berries', 'Prenatal vitamins', 'Glass of milk']} calories={350} />
-                                <MealCard type="Lunch" time="12:30 PM" items={['Grilled chicken salad', 'Brown rice', 'Fresh orange juice']} calories={520} />
-                                <MealCard type="Snack" time="3:30 PM" items={['Apple slices with peanut butter']} calories={180} />
-                                <MealCard type="Dinner" time="7:00 PM" items={['Steamed salmon', 'Quinoa', 'Roasted vegetables']} calories={620} />
+                                {meals.length === 0 ? <p>No meals logged today.</p> : meals.map((meal) => (
+                                    <MealCard 
+                                        key={meal.id} 
+                                        type={meal.meal_type} 
+                                        time={new Date(meal.logged_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} 
+                                        items={meal.food_items.split(',')} 
+                                        calories={meal.calories || 0} 
+                                    />
+                                ))}
                             </div>
                             <NutritionChart />
                         </div>
                         <div>
                             <DailyCalories />
                             <div style={{ marginTop: '24px' }}>
-                                <WaterTracker />
+                                <WaterTracker logs={waterLogs} onAddWater={handleAddWater} />
                             </div>
                         </div>
                     </div>
