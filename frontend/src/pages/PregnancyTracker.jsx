@@ -7,32 +7,39 @@ import KickCounter from '../components/pregnancy/KickCounter';
 import WeightTracker from '../components/pregnancy/WeightTracker';
 import WeeklyTips from '../components/pregnancy/WeeklyTips';
 import BloodPressureCard from '../components/pregnancy/BloodPressureCard';
+import LogVitalsModal from '../components/pregnancy/LogVitalsModal';
 import { recordsApi } from '../api/recordsApi';
 
 const PregnancyTracker = () => {
     const [pregnancy, setPregnancy] = useState(null);
     const [vitals, setVitals] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const fetchData = async () => {
+        try {
+            const pregRes = await recordsApi.getPregnancies();
+            if (pregRes.data && pregRes.data.length > 0) {
+                setPregnancy(pregRes.data[0]);
+            }
+            const vitalsRes = await recordsApi.getVitals();
+            if (vitalsRes.data) {
+                setVitals(vitalsRes.data);
+            }
+        } catch (error) {
+            console.error("Failed to fetch records", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const pregRes = await recordsApi.getPregnancies();
-                if (pregRes.data && pregRes.data.length > 0) {
-                    setPregnancy(pregRes.data[0]);
-                }
-                const vitalsRes = await recordsApi.getVitals();
-                if (vitalsRes.data) {
-                    setVitals(vitalsRes.data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch records", error);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchData();
     }, []);
+
+    const handleVitalsLogged = () => {
+        fetchData();
+    };
 
     const styles = {
         layout: {
@@ -53,7 +60,10 @@ const PregnancyTracker = () => {
             flex: 1
         },
         pageHeader: {
-            marginBottom: '32px'
+            marginBottom: '32px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
         },
         heading: {
             margin: '0 0 4px 0',
@@ -65,6 +75,16 @@ const PregnancyTracker = () => {
             margin: 0,
             fontSize: '1rem',
             color: '#718096'
+        },
+        logBtn: {
+            padding: '10px 20px',
+            borderRadius: '12px',
+            background: '#fb6f92',
+            color: 'white',
+            fontWeight: '600',
+            border: 'none',
+            cursor: 'pointer',
+            boxShadow: '0 4px 10px rgba(251, 111, 146, 0.3)'
         },
         gridLayout: {
             display: 'grid',
@@ -94,12 +114,22 @@ const PregnancyTracker = () => {
                 <DashboardNavbar />
                 <div style={styles.content}>
                     <div style={styles.pageHeader}>
-                        <h1 style={styles.heading}>Pregnancy Tracker</h1>
-                        <p style={styles.subheading}>
-                            You're at Week {currentWeek} · {trimester === 1 ? '1st' : trimester === 2 ? '2nd' : '3rd'} Trimester 
-                            {pregnancy?.edd ? ` · EDD: ${new Date(pregnancy.edd).toLocaleDateString()}` : ''}
-                        </p>
+                        <div>
+                            <h1 style={styles.heading}>Pregnancy Tracker</h1>
+                            <p style={styles.subheading}>
+                                You're at Week {currentWeek} · {trimester === 1 ? '1st' : trimester === 2 ? '2nd' : '3rd'} Trimester 
+                                {pregnancy?.edd ? ` · EDD: ${new Date(pregnancy.edd).toLocaleDateString()}` : ''}
+                            </p>
+                        </div>
+                        <button style={styles.logBtn} onClick={() => setIsModalOpen(true)}>+ Log Vitals</button>
                     </div>
+
+                    <LogVitalsModal 
+                        isOpen={isModalOpen} 
+                        onClose={() => setIsModalOpen(false)} 
+                        pregnancyId={pregnancy?.id} 
+                        onVitalsLogged={handleVitalsLogged} 
+                    />
 
                     <div style={styles.gridLayout}>
                         <div>
