@@ -1,7 +1,10 @@
 import React from 'react';
 
-const BloodPressureCard = ({ sys = 118, dia = 75 }) => {
-    const isNormal = sys < 120 && dia < 80;
+const BloodPressureCard = ({ vitals = [] }) => {
+    const latestBP = vitals.find(v => v.blood_pressure_systolic && v.blood_pressure_diastolic);
+    const sys = latestBP ? latestBP.blood_pressure_systolic : '--';
+    const dia = latestBP ? latestBP.blood_pressure_diastolic : '--';
+    const isNormal = sys !== '--' && sys < 120 && dia < 80;
 
     const styles = {
         container: {
