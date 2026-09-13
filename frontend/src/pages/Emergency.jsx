@@ -1,12 +1,69 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 import SOSButton from '../components/emergency/SOSButton';
 import EmergencyContacts from '../components/emergency/EmergencyContacts';
 import HospitalMap from '../components/emergency/HospitalMap';
 import AmbulanceCard from '../components/emergency/AmbulanceCard';
+import { emergencyApi } from '../api/emergencyApi';
 
 const Emergency = () => {
+    const [contacts, setContacts] = useState([]);
+    const [loadingSOS, setLoadingSOS] = useState(false);
+
+    useEffect(() => {
+        const fetchContacts = async () => {
+            try {
+                const res = await emergencyApi.getContacts();
+                setContacts(res.data);
+            } catch (err) {
+                console.error("Failed to fetch contacts", err);
+            }
+        };
+        fetchContacts();
+    }, []);
+
+    const handleSOS = () => {
+        setLoadingSOS(true);
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    try {
+                        await emergencyApi.trigger({
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        });
+                        alert('🚨 Emergency services and your contacts have been notified with your location. Help is on the way!');
+                    } catch (err) {
+                        alert('Error triggering SOS. Please call 911 immediately.');
+                    } finally {
+                        setLoadingSOS(false);
+                    }
+                },
+                async (error) => {
+                    console.warn("Geolocation denied/failed. Sending SOS without precise location.");
+                    try {
+                        await emergencyApi.trigger({});
+                        alert('🚨 Emergency services have been notified. Help is on the way!');
+                    } catch (err) {
+                        alert('Error triggering SOS. Please call 911 immediately.');
+                    } finally {
+                        setLoadingSOS(false);
+                    }
+                }
+            );
+        } else {
+            // Geolocation not supported
+            emergencyApi.trigger({}).then(() => {
+                alert('🚨 Emergency services have been notified. Help is on the way!');
+            }).catch(() => {
+                alert('Error triggering SOS. Please call 911 immediately.');
+            }).finally(() => {
+                setLoadingSOS(false);
+            });
+        }
+    };
+
     const styles = {
         layout: {
             display: 'flex',
@@ -75,10 +132,6 @@ const Emergency = () => {
         }
     };
 
-    const handleSOS = () => {
-        alert('🚨 Emergency services have been notified. Help is on the way!');
-    };
-
     return (
         <div style={styles.layout}>
             <Sidebar activeTab="emergency" />
@@ -97,7 +150,7 @@ const Emergency = () => {
                                 Press the SOS button to instantly alert emergency services and your emergency contacts. Your GPS location will be shared automatically.
                             </p>
                         </div>
-                        <SOSButton onTrigger={handleSOS} />
+                        <SOSButton onTrigger={handleSOS} disabled={loadingSOS} />
                     </div>
 
                     <div style={styles.gridLayout}>
@@ -108,7 +161,7 @@ const Emergency = () => {
                             </div>
                         </div>
                         <div>
-                            <EmergencyContacts />
+                            <EmergencyContacts contacts={contacts} />
                         </div>
                     </div>
                 </div>
