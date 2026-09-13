@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
+import adminApi from '../api/adminApi';
 
 const adminStats = [
     { label: 'Total Patients', value: '1,284', icon: '👩', trend: '+12 this week' },
@@ -9,15 +10,15 @@ const adminStats = [
     { label: 'SOS Alerts', value: '3', icon: '🚨', trend: '2 resolved' }
 ];
 
-const recentUsers = [
-    { name: 'Jane Doe', email: 'jane@example.com', week: 24, status: 'Active' },
-    { name: 'Amina Kofi', email: 'amina@example.com', week: 12, status: 'Active' },
-    { name: 'Priya Sharma', email: 'priya@example.com', week: 36, status: 'High Risk' },
-    { name: 'Maria Santos', email: 'maria@example.com', week: 8, status: 'Active' },
-    { name: 'Yemi Okafor', email: 'yemi@example.com', week: 30, status: 'Inactive' }
-];
-
 const AdminDashboard = () => {
+    const [auditLogs, setAuditLogs] = useState([]);
+
+    useEffect(() => {
+        adminApi.getAuditLogs().then(res => {
+            setAuditLogs(res.data.slice(0, 10)); // Show top 10
+        }).catch(err => console.error("Failed to fetch audit logs", err));
+    }, []);
+
     const s = {
         layout: { display: 'flex', minHeight: '100vh', background: 'linear-gradient(135deg, #f7f0ff 0%, #ede5ff 100%)', fontFamily: "'Inter', system-ui, sans-serif" },
         sidebar: { width: '280px', height: '100vh', background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)', borderRight: '1px solid rgba(139,92,246,0.15)', display: 'flex', flexDirection: 'column', padding: '24px 0', position: 'fixed', left: 0, top: 0, boxSizing: 'border-box' },
@@ -40,7 +41,7 @@ const AdminDashboard = () => {
         table: { width: '100%', borderCollapse: 'collapse' },
         th: { padding: '10px 16px', textAlign: 'left', fontSize: '0.78rem', fontWeight: '700', color: '#a0aec0', textTransform: 'uppercase', letterSpacing: '0.06em', borderBottom: '2px solid #f7fafc' },
         td: { padding: '14px 16px', fontSize: '0.92rem', color: '#2d3748', borderBottom: '1px solid #f7fafc' },
-        statusBadge: (status) => ({ padding: '4px 12px', borderRadius: '100px', fontSize: '0.78rem', fontWeight: '700', background: status === 'Active' ? 'rgba(56,161,105,0.1)' : status === 'High Risk' ? 'rgba(229,62,62,0.1)' : '#edf2f7', color: status === 'Active' ? '#38a169' : status === 'High Risk' ? '#e53e3e' : '#718096' })
+        statusBadge: (status) => ({ padding: '4px 12px', borderRadius: '100px', fontSize: '0.78rem', fontWeight: '700', background: 'rgba(229,62,62,0.1)', color: '#e53e3e' })
     };
 
     return (
@@ -48,8 +49,8 @@ const AdminDashboard = () => {
             <aside style={s.sidebar}>
                 <div style={s.sidebarLogo}><span>🛡️</span> Admin Panel</div>
                 <nav style={s.sidebarMenu}>
-                    {[{ icon: '📊', label: 'Dashboard' }, { icon: '👩', label: 'Patients' }, { icon: '🩺', label: 'Doctors' }, { icon: '📅', label: 'Appointments' }, { icon: '🚨', label: 'Alerts' }, { icon: '⚙️', label: 'Settings' }].map((item, i) => (
-                        <a key={i} href="#" style={{ ...s.sidebarItem, background: i === 0 ? 'rgba(124,58,237,0.08)' : 'transparent', color: i === 0 ? '#7c3aed' : '#718096' }}><span>{item.icon}</span>{item.label}</a>
+                    {[{ icon: '📊', label: 'Dashboard' }, { icon: '👩', label: 'Patients' }, { icon: '🩺', label: 'Doctors' }, { icon: '📋', label: 'Audit Logs' }, { icon: '🚨', label: 'Alerts' }, { icon: '⚙️', label: 'Settings' }].map((item, i) => (
+                        <a key={i} href="#" style={{ ...s.sidebarItem, background: item.label === 'Audit Logs' ? 'rgba(124,58,237,0.08)' : 'transparent', color: item.label === 'Audit Logs' ? '#7c3aed' : '#718096' }}><span>{item.icon}</span>{item.label}</a>
                     ))}
                 </nav>
             </aside>
@@ -62,8 +63,8 @@ const AdminDashboard = () => {
                     </div>
                 </div>
                 <div style={s.content}>
-                    <h1 style={s.heading}>Admin Dashboard</h1>
-                    <p style={s.sub}>Platform overview and management controls.</p>
+                    <h1 style={s.heading}>Security & Audit Logs</h1>
+                    <p style={s.sub}>Real-time compliance monitoring of system write actions.</p>
                     <div style={s.statsGrid}>
                         {adminStats.map((st, i) => (
                             <div key={i} style={s.statCard}>
@@ -77,21 +78,21 @@ const AdminDashboard = () => {
                         ))}
                     </div>
                     <div style={s.tableCard}>
-                        <h2 style={s.tableTitle}>Recent Patients</h2>
+                        <h2 style={s.tableTitle}>Recent Write Actions (Audit Trail)</h2>
                         <table style={s.table}>
                             <thead>
                                 <tr>
-                                    {['Patient', 'Email', 'Pregnancy Week', 'Status', 'Actions'].map(h => <th key={h} style={s.th}>{h}</th>)}
+                                    {['User', 'Action', 'Module', 'IP Address', 'Timestamp'].map(h => <th key={h} style={s.th}>{h}</th>)}
                                 </tr>
                             </thead>
                             <tbody>
-                                {recentUsers.map((u, i) => (
-                                    <tr key={i}>
-                                        <td style={s.td}><strong>{u.name}</strong></td>
-                                        <td style={s.td}>{u.email}</td>
-                                        <td style={s.td}>Week {u.week}</td>
-                                        <td style={s.td}><span style={s.statusBadge(u.status)}>{u.status}</span></td>
-                                        <td style={s.td}><a href="#" style={{ color: '#7c3aed', fontWeight: '600', textDecoration: 'none', fontSize: '0.88rem' }}>View</a></td>
+                                {auditLogs.length === 0 ? <tr><td colSpan="5" style={{...s.td, textAlign: 'center'}}>No recent activity.</td></tr> : auditLogs.map((log) => (
+                                    <tr key={log.id}>
+                                        <td style={s.td}><strong>{log.user_email || 'System'}</strong></td>
+                                        <td style={s.td}>{log.action}</td>
+                                        <td style={s.td}><span style={s.statusBadge(log.module)}>{log.module}</span></td>
+                                        <td style={s.td}>{log.ip_address}</td>
+                                        <td style={s.td}>{new Date(log.timestamp).toLocaleString()}</td>
                                     </tr>
                                 ))}
                             </tbody>
