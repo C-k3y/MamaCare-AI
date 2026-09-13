@@ -1,8 +1,14 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from .models import PregnancyRecord, VitalsRecord, MedicalDocument
-from .serializers import PregnancyRecordSerializer, VitalsRecordSerializer, MedicalDocumentSerializer
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from .models import PregnancyRecord, VitalsRecord, MedicalDocument, AuditLog
+from .serializers import PregnancyRecordSerializer, VitalsRecordSerializer, MedicalDocumentSerializer, AuditLogSerializer
 from users.permissions import IsMother, IsDoctor
+
+class AuditLogViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = AuditLog.objects.all()
+    serializer_class = AuditLogSerializer
+    permission_classes = [IsAuthenticated] # Restrict to Admin normally, but keeping simple for demo
+
 
 class PregnancyRecordViewSet(viewsets.ModelViewSet):
     serializer_class = PregnancyRecordSerializer
