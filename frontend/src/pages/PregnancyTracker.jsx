@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 import PregnancyProgress from '../components/pregnancy/PregnancyProgress';
@@ -7,8 +7,33 @@ import KickCounter from '../components/pregnancy/KickCounter';
 import WeightTracker from '../components/pregnancy/WeightTracker';
 import WeeklyTips from '../components/pregnancy/WeeklyTips';
 import BloodPressureCard from '../components/pregnancy/BloodPressureCard';
+import { recordsApi } from '../api/recordsApi';
 
 const PregnancyTracker = () => {
+    const [pregnancy, setPregnancy] = useState(null);
+    const [vitals, setVitals] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const pregRes = await recordsApi.getPregnancies();
+                if (pregRes.data && pregRes.data.length > 0) {
+                    setPregnancy(pregRes.data[0]);
+                }
+                const vitalsRes = await recordsApi.getVitals();
+                if (vitalsRes.data) {
+                    setVitals(vitalsRes.data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch records", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
     const styles = {
         layout: {
             display: 'flex',
@@ -55,6 +80,13 @@ const PregnancyTracker = () => {
         }
     };
 
+    if (loading) {
+        return <div style={{ padding: '20px' }}>Loading tracker...</div>;
+    }
+
+    const currentWeek = pregnancy?.gestational_age_weeks || 1;
+    const trimester = pregnancy?.trimester || 1;
+
     return (
         <div style={styles.layout}>
             <Sidebar activeTab="pregnancy" />
@@ -63,24 +95,27 @@ const PregnancyTracker = () => {
                 <div style={styles.content}>
                     <div style={styles.pageHeader}>
                         <h1 style={styles.heading}>Pregnancy Tracker</h1>
-                        <p style={styles.subheading}>You're at Week 24 · 2nd Trimester · 112 days to go!</p>
+                        <p style={styles.subheading}>
+                            You're at Week {currentWeek} · {trimester === 1 ? '1st' : trimester === 2 ? '2nd' : '3rd'} Trimester 
+                            {pregnancy?.edd ? ` · EDD: ${new Date(pregnancy.edd).toLocaleDateString()}` : ''}
+                        </p>
                     </div>
 
                     <div style={styles.gridLayout}>
                         <div>
                             <div style={{ marginBottom: '24px' }}>
-                                <PregnancyProgress currentWeek={24} totalWeeks={40} />
+                                <PregnancyProgress currentWeek={currentWeek} totalWeeks={40} />
                             </div>
                             <div style={{ marginBottom: '24px' }}>
                                 <BabyGrowth />
                             </div>
                             <div style={styles.twoCol}>
-                                <BloodPressureCard />
-                                <WeightTracker />
+                                <BloodPressureCard vitals={vitals} />
+                                <WeightTracker vitals={vitals} />
                             </div>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                            <KickCounter />
+                            <KickCounter vitals={vitals} />
                             <WeeklyTips />
                         </div>
                     </div>
