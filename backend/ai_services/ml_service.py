@@ -126,7 +126,20 @@ class RiskModelService:
             elif risk_score > 0.4:
                 level = 'medium'
                 
-            # TODO: Integrate SHAP explainer here to populate contributing factors
-            factors = {'Note': 'SHAP integration pending'}
-            
+            # Extract contributing factors based on feature deviation and model importance
+            factors = {}
+            if hasattr(self._model, 'feature_importances_'):
+                importances = self._model.feature_importances_
+                
+                # Simple heuristic: if a feature is important and deviated significantly from the mean (0 in scaled)
+                for idx, col in enumerate(self.FEATURE_COLUMNS):
+                    feat_val_scaled = X_scaled[0][idx]
+                    importance = importances[idx]
+                    
+                    # If feature is highly important and the value is high (scaled > 1.0)
+                    if importance > 0.05 and abs(feat_val_scaled) > 1.0:
+                        factors[col] = f"Value: {raw_features[col]} (High impact)"
+            else:
+                factors = {'Note': 'SHAP integration pending'}
+                
             return risk_score, level, factors
