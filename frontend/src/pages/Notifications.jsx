@@ -3,11 +3,11 @@ import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 
 const notificationsData = [
-    { id: 1, type: 'appointment', icon: '📅', title: 'Appointment Reminder', message: 'Your checkup with Dr. Amara Osei is tomorrow at 10:30 AM.', time: '2 hours ago', unread: true },
-    { id: 2, type: 'health', icon: '❤️', title: 'Daily Health Check', message: 'Don\'t forget to log your blood pressure reading for today.', time: '5 hours ago', unread: true },
-    { id: 3, type: 'nutrition', icon: '🥗', title: 'Nutrition Goal Met', message: 'Great job! You\'ve hit your daily iron intake goal.', time: 'Yesterday', unread: false },
-    { id: 4, type: 'tip', icon: '💡', title: 'Week 24 Tip', message: 'Your baby\'s lungs are developing rapidly. Gentle breathing exercises can help.', time: 'Yesterday', unread: false },
-    { id: 5, type: 'system', icon: '🔔', title: 'Profile Updated', message: 'Your pregnancy information was successfully updated.', time: '3 days ago', unread: false }
+    { id: 1, type: 'appointment', icon: '', title: 'Appointment Reminder', message: 'Your checkup with Dr. Amara Osei is tomorrow at 10:30 AM.', time: '2 hours ago', unread: true },
+    { id: 2, type: 'health', icon: '', title: 'Daily Health Check', message: 'Don\'t forget to log your blood pressure reading for today.', time: '5 hours ago', unread: true },
+    { id: 3, type: 'nutrition', icon: '', title: 'Nutrition Goal Met', message: 'Great job! You\'ve hit your daily iron intake goal.', time: 'Yesterday', unread: false },
+    { id: 4, type: 'tip', icon: '', title: 'Week 24 Tip', message: 'Your baby\'s lungs are developing rapidly. Gentle breathing exercises can help.', time: 'Yesterday', unread: false },
+    { id: 5, type: 'system', icon: '', title: 'Profile Updated', message: 'Your pregnancy information was successfully updated.', time: '3 days ago', unread: false }
 ];
 
 const Notifications = () => {

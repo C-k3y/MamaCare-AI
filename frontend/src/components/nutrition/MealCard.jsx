@@ -2,10 +2,10 @@ import React from 'react';
 
 const MealCard = ({ type = 'Breakfast', time = '8:00 AM', items = ['Oatmeal with berries', 'Glass of milk'], calories = 350, image }) => {
     const typeIcons = {
-        Breakfast: '🍳',
-        Lunch: '🥗',
-        Dinner: '🍲',
-        Snack: '🍎'
+        Breakfast: '',
+        Lunch: '',
+        Dinner: '',
+        Snack: ''
     };
 
     const styles = {
@@ -104,7 +104,7 @@ const MealCard = ({ type = 'Breakfast', time = '8:00 AM', items = ['Oatmeal with
             }}
         >
             <div style={styles.imageBox}>
-                {image ? <img src={image} alt={type} style={styles.img} /> : typeIcons[type] || '🍽️'}
+                {image ? <img src={image} alt={type} style={styles.img} /> : typeIcons[type] || ''}
             </div>
             
             <div style={styles.content}>

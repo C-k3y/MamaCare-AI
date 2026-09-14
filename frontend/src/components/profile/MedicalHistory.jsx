@@ -10,7 +10,7 @@ const MedicalHistory = ({ records = [] }) => {
             doctor: 'Dr. Jane Smith',
             type: 'Prenatal Checkup',
             notes: 'Blood pressure normal. Baby heartbeat strong at 155 bpm. Growth on track for 12 weeks.',
-            icon: '🩺'
+            icon: ''
         },
         {
             id: 2,
@@ -18,7 +18,7 @@ const MedicalHistory = ({ records = [] }) => {
             doctor: 'Dr. Jane Smith',
             type: 'Ultrasound',
             notes: 'First trimester ultrasound completed. Nuchal translucency within normal range. No anomalies detected.',
-            icon: '🔊'
+            icon: ''
         },
         {
             id: 3,
@@ -26,7 +26,7 @@ const MedicalHistory = ({ records = [] }) => {
             doctor: 'Dr. Alan Patel',
             type: 'Blood Work',
             notes: 'CBC normal. Iron slightly low — prescribed prenatal iron supplement 65mg/day.',
-            icon: '🩸'
+            icon: ''
         }
     ];
 

@@ -161,7 +161,7 @@ const VideoConsultation = () => {
                     
                     <div style={styles.selfVideo}>
                         {isVideoOff ? (
-                            <span style={{ fontSize: '2rem' }}>👤</span>
+                            <span style={{ fontSize: '2rem' }}></span>
                         ) : (
                             <span style={{ color: '#a0aec0', fontSize: '0.9rem' }}>Your Camera</span>
                         )}
@@ -174,19 +174,19 @@ const VideoConsultation = () => {
                     style={{ ...styles.btn('toggle'), background: isMuted ? 'rgba(229,62,62,0.8)' : 'rgba(255,255,255,0.1)' }} 
                     onClick={() => setIsMuted(!isMuted)}
                 >
-                    {isMuted ? '🔇' : '🎤'}
+                    {isMuted ? '' : ''}
                 </button>
                 <button 
                     style={{ ...styles.btn('toggle'), background: isVideoOff ? 'rgba(229,62,62,0.8)' : 'rgba(255,255,255,0.1)' }} 
                     onClick={() => setIsVideoOff(!isVideoOff)}
                 >
-                    {isVideoOff ? '🚫' : '📹'}
+                    {isVideoOff ? '' : ''}
                 </button>
                 <button style={styles.btn('toggle')}>
-                    💬
+                    
                 </button>
                 <button style={styles.btn('end')} onClick={handleEndCall}>
-                    ☎️
+                    
                 </button>
             </div>
         </div>

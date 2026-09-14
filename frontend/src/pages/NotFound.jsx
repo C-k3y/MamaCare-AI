@@ -16,7 +16,7 @@ const NotFound = () => {
     return (
         <div style={s.page}>
             <div style={s.card}>
-                <span style={s.emoji}>🩺</span>
+                <span style={s.emoji}></span>
                 <h1 style={s.code}>404</h1>
                 <h2 style={s.title}>Page Not Found</h2>
                 <p style={s.desc}>Oops! It seems this page went into labor early. The page you're looking for doesn't exist or has been moved.</p>

@@ -97,7 +97,7 @@ const WaterTracker = ({ targetGlasses = 8, logs = [], onAddWater }) => {
             
             <div style={styles.glassesContainer}>
                 {Array.from({ length: targetGlasses }).map((_, i) => (
-                    <span key={i} style={styles.glass(i < consumed)}>💧</span>
+                    <span key={i} style={styles.glass(i < consumed)}></span>
                 ))}
             </div>
             

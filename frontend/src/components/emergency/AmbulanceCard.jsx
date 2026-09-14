@@ -80,7 +80,7 @@ const AmbulanceCard = ({ status = 'idle', eta = null, onRequest }) => {
     return (
         <div style={styles.container}>
             <div style={styles.header}>
-                <div style={styles.iconBox}>🚑</div>
+                <div style={styles.iconBox}></div>
                 <div>
                     <h3 style={styles.title}>Ambulance Service</h3>
                     <p style={styles.subtitle}>Fast medical transport</p>

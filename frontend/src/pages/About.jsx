@@ -19,9 +19,9 @@ const About = () => {
     };
 
     const values = [
-        { icon: '💝', title: 'Mother-First', desc: 'Every decision centers on the health and wellbeing of mothers and their babies.' },
-        { icon: '🔬', title: 'Science-Backed', desc: 'All guidance is grounded in evidence-based medicine and clinical research.' },
-        { icon: '🔒', title: 'Privacy First', desc: 'Your health data is encrypted and never shared without your explicit consent.' }
+        { icon: '', title: 'Mother-First', desc: 'Every decision centers on the health and wellbeing of mothers and their babies.' },
+        { icon: '', title: 'Science-Backed', desc: 'All guidance is grounded in evidence-based medicine and clinical research.' },
+        { icon: '', title: 'Privacy First', desc: 'Your health data is encrypted and never shared without your explicit consent.' }
     ];
 
     const team = [

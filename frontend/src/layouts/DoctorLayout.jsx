@@ -15,11 +15,11 @@ const DoctorLayout = ({ children, pageTitle = 'Doctor Portal' }) => {
         navigate('/');
     };
     const menuItems = [
-        { id: 'overview', label: 'Overview', icon: '📊' },
-        { id: 'patients', label: 'Patients', icon: '👩‍⚕️' },
-        { id: 'appointments', label: 'Appointments', icon: '📅' },
-        { id: 'messages', label: 'Messages', icon: '💬' },
-        { id: 'reports', label: 'Reports', icon: '📋' }
+        { id: 'overview', label: 'Overview', icon: '' },
+        { id: 'patients', label: 'Patients', icon: '‍' },
+        { id: 'appointments', label: 'Appointments', icon: '' },
+        { id: 'messages', label: 'Messages', icon: '' },
+        { id: 'reports', label: 'Reports', icon: '' }
     ];
 
     const styles = {
@@ -146,7 +146,7 @@ const DoctorLayout = ({ children, pageTitle = 'Doctor Portal' }) => {
             {/* Doctor Sidebar */}
             <aside style={styles.sidebar}>
                 <div style={styles.logo}>
-                    <span>🏥</span> MamaCare MD
+                    <span></span> MamaCare MD
                 </div>
                 <nav style={styles.menuList}>
                     {menuItems.map(item => (
@@ -169,7 +169,7 @@ const DoctorLayout = ({ children, pageTitle = 'Doctor Portal' }) => {
                     ))}
                 </nav>
                 <button style={styles.logoutBtn} onClick={handleLogout}>
-                    <span>🚪</span> Logout
+                    <span></span> Logout
                 </button>
             </aside>
 

@@ -4,7 +4,7 @@ import DashboardNavbar from '../components/layout/DashboardNavbar';
 
 const conversations = [
     { id: 1, name: 'Dr. Amara Osei', role: 'Obstetrician', avatar: 'AO', lastMsg: 'Your test results look great! Keep it up.', time: '10:32 AM', unread: 2 },
-    { id: 2, name: 'MamaCare AI Bot', role: 'AI Assistant', avatar: '🤖', lastMsg: 'How can I help you today?', time: 'Yesterday', unread: 0 },
+    { id: 2, name: 'MamaCare AI Bot', role: 'AI Assistant', avatar: '', lastMsg: 'How can I help you today?', time: 'Yesterday', unread: 0 },
     { id: 3, name: 'Dr. Lena Fischer', role: 'Midwife', avatar: 'LF', lastMsg: 'Don\'t forget to do your breathing exercises.', time: 'Mon', unread: 0 },
     { id: 4, name: 'Nurse Priya', role: 'Support Nurse', avatar: 'NP', lastMsg: 'See you at your next appointment!', time: 'Jul 15', unread: 0 }
 ];

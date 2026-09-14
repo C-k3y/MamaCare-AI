@@ -138,7 +138,7 @@ const PregnancyInfo = ({
                     style={styles.editBtn}
                     onClick={() => setIsEditing(prev => !prev)}
                 >
-                    {isEditing ? 'Cancel' : '✏️ Edit'}
+                    {isEditing ? 'Cancel' : ' Edit'}
                 </button>
             </div>
 
@@ -147,7 +147,7 @@ const PregnancyInfo = ({
                     <p style={styles.weekLabel}>Current Gestational Age</p>
                     <p style={styles.weekNum}>Week {currentWeek}</p>
                 </div>
-                <span style={styles.weekIcon}>👶</span>
+                <span style={styles.weekIcon}></span>
             </div>
 
             <div style={styles.fieldsGrid}>

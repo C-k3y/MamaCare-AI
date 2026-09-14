@@ -114,15 +114,15 @@ const Dashboard = () => {
                 <DashboardNavbar />
                 <div style={styles.content}>
                     <div style={styles.pageHeader}>
-                        <h1 style={styles.greeting}>Good morning 👋</h1>
+                        <h1 style={styles.greeting}>Good morning </h1>
                         <p style={styles.greetingSub}>{today} · Week {currentWeek} of your pregnancy</p>
                     </div>
 
                     <div style={styles.statsGrid}>
-                        <StatsCard title="Baby's Heartbeat" value="--" unit="bpm" trend={0} icon="❤️" />
-                        <StatsCard title="Weight" value={latestWeight} unit="kg" trend={0} icon="⚖️" />
-                        <StatsCard title="Blood Pressure" value={`${sys}/${dia}`} unit="mmHg" trend={0} icon="🩺" />
-                        <StatsCard title="Steps Today" value="--" unit="steps" trend={0} icon="👣" />
+                        <StatsCard title="Baby's Heartbeat" value="--" unit="bpm" trend={0} icon="" />
+                        <StatsCard title="Weight" value={latestWeight} unit="kg" trend={0} icon="" />
+                        <StatsCard title="Blood Pressure" value={`${sys}/${dia}`} unit="mmHg" trend={0} icon="" />
+                        <StatsCard title="Steps Today" value="--" unit="steps" trend={0} icon="" />
                     </div>
 
                     <div style={styles.threeColGrid}>

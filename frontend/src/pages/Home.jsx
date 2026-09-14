@@ -175,12 +175,12 @@ const Home = () => {
     };
 
     const features = [
-        { icon: '🤰', title: 'Pregnancy Tracking', desc: 'Monitor your baby\'s growth week by week with personalized insights tailored to your journey.' },
-        { icon: '🥗', title: 'Nutrition Planner', desc: 'Get AI-powered meal recommendations to ensure you and your baby receive optimal prenatal nutrition.' },
-        { icon: '📅', title: 'Appointment Manager', desc: 'Easily schedule, track, and get reminders for all your prenatal checkups and specialist visits.' },
-        { icon: '🩺', title: 'Symptom Checker', desc: 'Describe your symptoms and get instant AI-powered guidance on what might be happening.' },
-        { icon: '🚨', title: 'Emergency SOS', desc: 'One-tap emergency alert that notifies services and your loved ones with your GPS location.' },
-        { icon: '💬', title: 'AI Health Chat', desc: 'Ask any pregnancy-related question to our intelligent chatbot, available 24/7 for your peace of mind.' }
+        { icon: '', title: 'Pregnancy Tracking', desc: 'Monitor your baby\'s growth week by week with personalized insights tailored to your journey.' },
+        { icon: '', title: 'Nutrition Planner', desc: 'Get AI-powered meal recommendations to ensure you and your baby receive optimal prenatal nutrition.' },
+        { icon: '', title: 'Appointment Manager', desc: 'Easily schedule, track, and get reminders for all your prenatal checkups and specialist visits.' },
+        { icon: '', title: 'Symptom Checker', desc: 'Describe your symptoms and get instant AI-powered guidance on what might be happening.' },
+        { icon: '', title: 'Emergency SOS', desc: 'One-tap emergency alert that notifies services and your loved ones with your GPS location.' },
+        { icon: '', title: 'AI Health Chat', desc: 'Ask any pregnancy-related question to our intelligent chatbot, available 24/7 for your peace of mind.' }
     ];
 
     return (
@@ -189,7 +189,7 @@ const Home = () => {
             <main>
                 <section style={styles.hero}>
                     <div style={styles.heroBadge}>
-                        <span>✨</span> AI-Powered Maternal Healthcare
+                        <span></span> AI-Powered Maternal Healthcare
                     </div>
                     <h1 style={styles.heroTitle}>
                         Your Pregnancy Journey,{' '}

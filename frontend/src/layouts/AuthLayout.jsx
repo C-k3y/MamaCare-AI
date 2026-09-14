@@ -73,7 +73,7 @@ const AuthLayout = ({ children }) => {
             <div style={styles.contentWrapper}>
                 <div style={{ textAlign: 'center' }}>
                     <div style={styles.logo}>
-                        <span>🩺</span> MamaCare AI
+                        <span></span> MamaCare AI
                     </div>
                     <p style={styles.tagline}>Your intelligent pregnancy companion</p>
                 </div>

@@ -11,12 +11,12 @@ const Sidebar = ({ activeTab = 'dashboard' }) => {
         navigate('/');
     };
     const menuItems = [
-        { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-        { id: 'appointments', label: 'Appointments', icon: '📅' },
-        { id: 'nutrition', label: 'Nutrition', icon: '🥗' },
-        { id: 'pregnancy', label: 'Pregnancy', icon: '👶' },
-        { id: 'emergency', label: 'Emergency', icon: '🚨' },
-        { id: 'profile', label: 'Profile', icon: '👩' }
+        { id: 'dashboard', label: 'Dashboard', icon: '' },
+        { id: 'appointments', label: 'Appointments', icon: '' },
+        { id: 'nutrition', label: 'Nutrition', icon: '' },
+        { id: 'pregnancy', label: 'Pregnancy', icon: '' },
+        { id: 'emergency', label: 'Emergency', icon: '' },
+        { id: 'profile', label: 'Profile', icon: '' }
     ];
 
     const styles = {
@@ -86,7 +86,7 @@ const Sidebar = ({ activeTab = 'dashboard' }) => {
     return (
         <aside style={styles.sidebar}>
             <div style={styles.logo}>
-                <span>🩺</span> MamaCare
+                <span></span> MamaCare
             </div>
             
             <nav style={styles.menuList}>
@@ -115,7 +115,7 @@ const Sidebar = ({ activeTab = 'dashboard' }) => {
             </nav>
 
             <button style={styles.logoutBtn} onClick={handleLogout}>
-                <span>🚪</span> Logout
+                <span></span> Logout
             </button>
         </aside>
     );

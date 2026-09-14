@@ -3,21 +3,26 @@ import Sidebar from '../components/layout/Sidebar';
 import DashboardNavbar from '../components/layout/DashboardNavbar';
 import adminApi from '../api/adminApi';
 
-const adminStats = [
-    { label: 'Total Patients', value: '1,284', icon: '👩', trend: '+12 this week' },
-    { label: 'Active Doctors', value: '38', icon: '🩺', trend: '+2 this month' },
-    { label: 'Appointments Today', value: '67', icon: '📅', trend: '5 pending' },
-    { label: 'SOS Alerts', value: '3', icon: '🚨', trend: '2 resolved' }
-];
-
 const AdminDashboard = () => {
     const [auditLogs, setAuditLogs] = useState([]);
+    const [analytics, setAnalytics] = useState(null);
 
     useEffect(() => {
         adminApi.getAuditLogs().then(res => {
             setAuditLogs(res.data.slice(0, 10)); // Show top 10
         }).catch(err => console.error("Failed to fetch audit logs", err));
+
+        adminApi.getAnalytics().then(res => {
+            setAnalytics(res.data);
+        }).catch(err => console.error("Failed to fetch analytics", err));
     }, []);
+
+    const dynamicStats = analytics ? [
+        { label: 'Total Patients', value: analytics.total_patients, icon: '', trend: 'Registered mothers' },
+        { label: 'Active Doctors', value: analytics.active_doctors, icon: '', trend: 'Registered doctors' },
+        { label: 'Appointments Today', value: analytics.appointments_today, icon: '', trend: 'Scheduled today' },
+        { label: 'SOS Alerts', value: analytics.sos_alerts, icon: '', trend: 'Active emergencies' }
+    ] : [];
 
     const s = {
         layout: { display: 'flex', minHeight: '100vh', background: 'linear-gradient(135deg, #f7f0ff 0%, #ede5ff 100%)', fontFamily: "'Inter', system-ui, sans-serif" },
@@ -47,9 +52,9 @@ const AdminDashboard = () => {
     return (
         <div style={s.layout}>
             <aside style={s.sidebar}>
-                <div style={s.sidebarLogo}><span>🛡️</span> Admin Panel</div>
+                <div style={s.sidebarLogo}><span></span> Admin Panel</div>
                 <nav style={s.sidebarMenu}>
-                    {[{ icon: '📊', label: 'Dashboard' }, { icon: '👩', label: 'Patients' }, { icon: '🩺', label: 'Doctors' }, { icon: '📋', label: 'Audit Logs' }, { icon: '🚨', label: 'Alerts' }, { icon: '⚙️', label: 'Settings' }].map((item, i) => (
+                    {[{ icon: '', label: 'Dashboard' }, { icon: '', label: 'Patients' }, { icon: '', label: 'Doctors' }, { icon: '', label: 'Audit Logs' }, { icon: '', label: 'Alerts' }, { icon: '', label: 'Settings' }].map((item, i) => (
                         <a key={i} href="#" style={{ ...s.sidebarItem, background: item.label === 'Audit Logs' ? 'rgba(124,58,237,0.08)' : 'transparent', color: item.label === 'Audit Logs' ? '#7c3aed' : '#718096' }}><span>{item.icon}</span>{item.label}</a>
                     ))}
                 </nav>
@@ -66,7 +71,7 @@ const AdminDashboard = () => {
                     <h1 style={s.heading}>Security & Audit Logs</h1>
                     <p style={s.sub}>Real-time compliance monitoring of system write actions.</p>
                     <div style={s.statsGrid}>
-                        {adminStats.map((st, i) => (
+                        {dynamicStats.map((st, i) => (
                             <div key={i} style={s.statCard}>
                                 <div style={s.iconBox}>{st.icon}</div>
                                 <div>

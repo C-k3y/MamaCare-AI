@@ -35,7 +35,7 @@ const WeeklyTips = ({ tip = "It's normal to feel more fatigued this week. Make s
 
     return (
         <div style={styles.container}>
-            <div style={styles.iconBox}>💡</div>
+            <div style={styles.iconBox}></div>
             <div style={styles.content}>
                 <h4 style={styles.title}>Doctor's Tip</h4>
                 <p style={styles.text}>{tip}</p>

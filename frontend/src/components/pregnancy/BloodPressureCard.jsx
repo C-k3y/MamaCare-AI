@@ -69,7 +69,7 @@ const BloodPressureCard = ({ vitals = [] }) => {
 
     return (
         <div style={styles.container}>
-            <div style={styles.iconBox}>❤️</div>
+            <div style={styles.iconBox}></div>
             <div style={styles.info}>
                 <h3 style={styles.title}>Blood Pressure</h3>
                 <div style={styles.valueRow}>

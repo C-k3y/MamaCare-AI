@@ -9,6 +9,7 @@ export const appointmentApi = {
     getAvailability: () => axiosInstance.get('/appointments/availability/'),
     getReminders: () => axiosInstance.get('/appointments/medications/'),
     createReminder: (data) => axiosInstance.post('/appointments/medications/', data),
+    joinRoom: (id) => axiosInstance.post(API_ROUTES.APPOINTMENTS.CANCEL(id).replace('cancel', 'join_room')),
 };
 
 export default appointmentApi;

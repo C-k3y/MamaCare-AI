@@ -2,11 +2,11 @@ import React from 'react';
 
 const ReminderCard = ({ title, time, type = 'medication' }) => {
     const typeStyles = {
-        medication: { bg: '#ebf8ff', color: '#3182ce', icon: '💊' },
-        appointment: { bg: '#faf5ff', color: '#805ad5', icon: '📅' },
-        hydration: { bg: '#e6fffa', color: '#319795', icon: '💧' },
-        activity: { bg: '#fff5f5', color: '#e53e3e', icon: '🏃‍♀️' },
-        default: { bg: '#ffe5ec', color: '#fb6f92', icon: '✨' }
+        medication: { bg: '#ebf8ff', color: '#3182ce', icon: '' },
+        appointment: { bg: '#faf5ff', color: '#805ad5', icon: '' },
+        hydration: { bg: '#e6fffa', color: '#319795', icon: '' },
+        activity: { bg: '#fff5f5', color: '#e53e3e', icon: '‍' },
+        default: { bg: '#ffe5ec', color: '#fb6f92', icon: '' }
     };
 
     const theme = typeStyles[type] || typeStyles.default;

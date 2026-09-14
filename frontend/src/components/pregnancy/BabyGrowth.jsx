@@ -79,7 +79,7 @@ const BabyGrowth = ({ week = 15, size = 'Apple', length = '10.1 cm', weight = '7
             <h3 style={styles.header}>Week {week}</h3>
             
             <div style={styles.imageBox}>
-                🍎 {/* This can be dynamically based on 'size' prop later */}
+                 {/* This can be dynamically based on 'size' prop later */}
             </div>
             
             <p style={styles.mainText}>

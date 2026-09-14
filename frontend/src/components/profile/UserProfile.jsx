@@ -134,7 +134,7 @@ const UserProfile = ({
                     style={styles.editBtn}
                     onClick={() => setIsEditing(prev => !prev)}
                 >
-                    {isEditing ? 'Cancel' : '✏️ Edit'}
+                    {isEditing ? 'Cancel' : ' Edit'}
                 </button>
             </div>
 

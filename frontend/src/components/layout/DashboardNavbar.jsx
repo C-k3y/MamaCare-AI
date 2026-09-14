@@ -94,7 +94,7 @@ const DashboardNavbar = ({ title = "Dashboard" }) => {
                     onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'}
                     onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                 >
-                    🔔
+                    
                     <span style={styles.badge}>3</span>
                 </button>
 

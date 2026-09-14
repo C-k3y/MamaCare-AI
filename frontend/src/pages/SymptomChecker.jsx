@@ -154,7 +154,7 @@ const SymptomChecker = () => {
                     <div style={styles.messageList}>
                         {messages.length === 0 && (
                             <div style={{ textAlign: 'center', color: '#a0aec0', marginTop: '40px' }}>
-                                <span style={{ fontSize: '3rem' }}>💬</span>
+                                <span style={{ fontSize: '3rem' }}></span>
                                 <p>No messages yet. Describe your symptoms below!</p>
                             </div>
                         )}

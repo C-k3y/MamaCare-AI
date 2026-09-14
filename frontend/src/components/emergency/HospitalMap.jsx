@@ -111,19 +111,19 @@ const HospitalMap = () => {
                     title="City Hospital"
                     onMouseOver={e => e.currentTarget.style.transform = 'scale(1.2)'}
                     onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
-                >🏥</div>
+                ></div>
                 <div 
                     style={{...styles.hospitalPin, top: '20%', left: '70%'}} 
                     title="Maternity Ward"
                     onMouseOver={e => e.currentTarget.style.transform = 'scale(1.2)'}
                     onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
-                >🏥</div>
+                ></div>
                 <div 
                     style={{...styles.hospitalPin, top: '60%', left: '50%'}} 
                     title="General Clinic"
                     onMouseOver={e => e.currentTarget.style.transform = 'scale(1.2)'}
                     onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
-                >🏥</div>
+                ></div>
 
                 <div style={styles.overlayBox}>
                     <div>

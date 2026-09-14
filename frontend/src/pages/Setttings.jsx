@@ -48,7 +48,7 @@ const Setttings = () => {
                     <p style={s.sub}>Manage your account preferences and notification settings.</p>
 
                     <div style={s.card}>
-                        <h2 style={s.cardTitle}><span>🔔</span> Notifications</h2>
+                        <h2 style={s.cardTitle}><span></span> Notifications</h2>
                         {notifItems.map((item, i) => (
                             <div key={item.key} style={i < notifItems.length - 1 ? s.row : s.rowLast}>
                                 <div>
@@ -63,7 +63,7 @@ const Setttings = () => {
                     </div>
 
                     <div style={s.card}>
-                        <h2 style={s.cardTitle}><span>🔒</span> Privacy</h2>
+                        <h2 style={s.cardTitle}><span></span> Privacy</h2>
                         <div style={s.row}>
                             <div>
                                 <p style={s.label}>Share Anonymous Data</p>
@@ -85,7 +85,7 @@ const Setttings = () => {
                     </div>
 
                     <div style={s.card}>
-                        <h2 style={s.cardTitle}><span>🗑️</span> Danger Zone</h2>
+                        <h2 style={s.cardTitle}><span></span> Danger Zone</h2>
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button style={{ padding: '12px 20px', borderRadius: '12px', background: 'transparent', border: '2px solid #edf2f7', color: '#718096', fontWeight: '600', cursor: 'pointer', fontFamily: "'Inter', system-ui, sans-serif" }}>
                                 Change Password
@@ -97,7 +97,7 @@ const Setttings = () => {
                     </div>
 
                     <button style={s.saveBtn} onClick={handleSave}>
-                        {saved ? '✓ Saved!' : 'Save Preferences'}
+                        {saved ? ' Saved!' : 'Save Preferences'}
                     </button>
                 </div>
             </div>

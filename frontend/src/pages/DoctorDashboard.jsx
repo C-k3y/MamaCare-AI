@@ -40,9 +40,9 @@ const DoctorDashboard = () => {
     return (
         <div style={s.layout}>
             <aside style={s.sidebar}>
-                <div style={s.logo}><span>👨‍⚕️</span> Doctor Portal</div>
+                <div style={s.logo}><span>‍</span> Doctor Portal</div>
                 <nav style={s.menu}>
-                    {[{ icon: '📊', label: 'Overview' }, { icon: '📅', label: 'Appointments' }, { icon: '👩‍🦰', label: 'Patients' }, { icon: '📝', label: 'Notes' }, { icon: '💬', label: 'Messages' }, { icon: '⚙️', label: 'Settings' }].map((item, i) => (
+                    {[{ icon: '', label: 'Overview' }, { icon: '', label: 'Appointments' }, { icon: '‍', label: 'Patients' }, { icon: '', label: 'Notes' }, { icon: '', label: 'Messages' }, { icon: '', label: 'Settings' }].map((item, i) => (
                         <button key={i} style={s.menuItem(i === 0)} onClick={() => {}}><span>{item.icon}</span>{item.label}</button>
                     ))}
                 </nav>

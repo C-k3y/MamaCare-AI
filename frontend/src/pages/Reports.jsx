@@ -82,7 +82,7 @@ const Reports = () => {
                         ))}
                     </div>
 
-                    <button style={s.downloadBtn}>📊 Generate & Download Current Report</button>
+                    <button style={s.downloadBtn}> Generate & Download Current Report</button>
                 </div>
             </div>
         </div>

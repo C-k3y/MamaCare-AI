@@ -147,7 +147,7 @@ const ChatWindow = () => {
         <div style={styles.container}>
             {/* Header */}
             <div style={styles.header}>
-                <div style={styles.headerAvatar}>🩺</div>
+                <div style={styles.headerAvatar}></div>
                 <div>
                     <h3 style={styles.headerTitle}>MamaCare AI</h3>
                     <p style={styles.headerSubtitle}>Always here for you</p>

@@ -36,6 +36,7 @@ import SymptomChecker from '../pages/SymptomChecker';
 // Role-specific dashboards
 import AdminDashboard from '../pages/AdminDashboard';
 import DoctorDashboard from '../pages/DoctorDashboard';
+import VideoConsultation from '../pages/VideoConsultation';
 
 const AppRoutes = () => {
     return (
@@ -78,6 +79,11 @@ const AppRoutes = () => {
                                 
                                 <Route element={<RoleProtectedRoute allowedRoles={[ROLES.DOCTOR]} />}>
                                     <Route path="/doctor" element={<DoctorDashboard />} />
+                                </Route>
+
+                                {/* Shared Private Routes (Mother and Doctor) */}
+                                <Route element={<PrivateRoute />}>
+                                    <Route path="/video/:id" element={<VideoConsultation />} />
                                 </Route>
 
                                 {/* 404 */}

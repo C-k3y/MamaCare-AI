@@ -7,7 +7,8 @@ const AppointmentCard = ({
   date = "Oct 24, 2026",
   time = "10:30 AM",
   status = "Upcoming",
-  imageUrl
+  imageUrl,
+  appointmentId
 }) => {
   return (
     <div className="appointment-card">
@@ -44,8 +45,16 @@ const AppointmentCard = ({
       </div>
 
       <div className="card-footer">
-        <button className="btn-secondary">Reschedule</button>
-        <button className="btn-primary">View Details</button>
+        {specialty === 'Telemedicine' && status.toLowerCase() === 'scheduled' ? (
+            <button className="btn-primary" style={{ background: '#38a169', borderColor: '#38a169', flex: 1 }} onClick={() => window.location.href=`/video/${appointmentId}`}>
+                 Join Video Call
+            </button>
+        ) : (
+            <>
+                <button className="btn-secondary">Reschedule</button>
+                <button className="btn-primary">View Details</button>
+            </>
+        )}
       </div>
     </div>
   );

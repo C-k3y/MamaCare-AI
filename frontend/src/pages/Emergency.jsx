@@ -33,7 +33,7 @@ const Emergency = () => {
                             latitude: position.coords.latitude,
                             longitude: position.coords.longitude
                         });
-                        alert('🚨 Emergency services and your contacts have been notified with your location. Help is on the way!');
+                        alert(' Emergency services and your contacts have been notified with your location. Help is on the way!');
                     } catch (err) {
                         alert('Error triggering SOS. Please call 911 immediately.');
                     } finally {
@@ -44,7 +44,7 @@ const Emergency = () => {
                     console.warn("Geolocation denied/failed. Sending SOS without precise location.");
                     try {
                         await emergencyApi.trigger({});
-                        alert('🚨 Emergency services have been notified. Help is on the way!');
+                        alert(' Emergency services have been notified. Help is on the way!');
                     } catch (err) {
                         alert('Error triggering SOS. Please call 911 immediately.');
                     } finally {
@@ -55,7 +55,7 @@ const Emergency = () => {
         } else {
             // Geolocation not supported
             emergencyApi.trigger({}).then(() => {
-                alert('🚨 Emergency services have been notified. Help is on the way!');
+                alert(' Emergency services have been notified. Help is on the way!');
             }).catch(() => {
                 alert('Error triggering SOS. Please call 911 immediately.');
             }).finally(() => {

@@ -38,7 +38,7 @@ const Footer = () => {
         <footer style={styles.footer}>
             <div>
                 <div style={styles.logo}>
-                    <span>🩺</span> MamaCare AI
+                    <span></span> MamaCare AI
                 </div>
                 <p style={{ margin: '8px 0 0 0' }}>Empowering your pregnancy journey.</p>
             </div>
