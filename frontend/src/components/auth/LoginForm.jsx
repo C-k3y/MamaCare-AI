@@ -23,7 +23,7 @@ const LoginForm = () => {
             const data = await authService.login(formData);
             const token = data.token || data.access_token;
             const role = data.role || data.user?.role || 'mother';
-            login(token, role, data.refresh);
+            login(token, role, data.refresh, data.user);
             navigate('/dashboard');
         } catch (err) {
             setError(err.message || 'Login failed.');
