@@ -1,6 +1,13 @@
 import React from 'react';
+import { useAuth } from '../../context/AuthContext';
 
 const DashboardNavbar = ({ title = "Dashboard" }) => {
+    const { user } = useAuth();
+    
+    // Fallbacks if user isn't fully loaded
+    const firstName = user?.first_name || user?.username || 'Guest';
+    const initials = firstName.substring(0, 2).toUpperCase();
+
     const styles = {
         navbar: {
             height: '80px',
@@ -99,8 +106,8 @@ const DashboardNavbar = ({ title = "Dashboard" }) => {
                 </button>
 
                 <div style={styles.userBox}>
-                    <div style={styles.avatar}>JD</div>
-                    <p style={styles.greeting}>Hi, Jane</p>
+                    <div style={styles.avatar}>{initials}</div>
+                    <p style={styles.greeting}>Hi, {firstName}</p>
                 </div>
             </div>
         </nav>
