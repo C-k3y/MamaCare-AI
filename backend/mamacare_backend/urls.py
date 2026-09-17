@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from .views import api_root
 
 urlpatterns = [
+    path('', api_root, name='api_root'),
     path('admin/', admin.site.urls),
     path('api/users/', include('users.urls')),
     path('api/records/', include('records.urls')),
@@ -28,3 +30,6 @@ urlpatterns = [
     path('api/messages/', include('communications.urls')),
     path('api/', include('ai_services.urls')),
 ]
+
+handler404 = 'mamacare_backend.views.custom_404'
+handler500 = 'mamacare_backend.views.custom_500'
