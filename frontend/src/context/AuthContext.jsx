@@ -9,25 +9,32 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [token, setToken] = useState(null);
     const [userRole, setUserRole] = useState(null);
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         const storedRole = localStorage.getItem('userRole');
+        const storedUser = localStorage.getItem('user');
         
         if (storedToken && storedRole) {
             setToken(storedToken);
             setUserRole(storedRole);
+            if (storedUser) setUser(JSON.parse(storedUser));
             setIsAuthenticated(true);
         }
         setLoading(false);
     }, []);
 
-    const login = (newToken, role, refreshToken = null) => {
+    const login = (newToken, role, refreshToken = null, userData = null) => {
         localStorage.setItem('token', newToken);
         localStorage.setItem('userRole', role);
         if (refreshToken) {
             localStorage.setItem('refresh_token', refreshToken);
+        }
+        if (userData) {
+            localStorage.setItem('user', JSON.stringify(userData));
+            setUser(userData);
         }
         setToken(newToken);
         setUserRole(role);
@@ -42,6 +49,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user'); // clear user data as well
         setToken(null);
         setUserRole(null);
+        setUser(null);
         setIsAuthenticated(false);
     };
 
@@ -107,6 +115,7 @@ export const AuthProvider = ({ children }) => {
             isAuthenticated, 
             token, 
             userRole, 
+            user,
             login, 
             logout, 
             loading,
