@@ -158,7 +158,7 @@ const RegisterForm = () => {
             });
             const token = data.token || data.access_token;
             const role = data.role || data.user?.role || 'mother';
-            login(token, role, data.refresh);
+            login(token, role, data.refresh, data.user);
             setSuccess('Account created successfully! Redirecting…');
             setTimeout(() => navigate('/dashboard'), 1200);
         } catch (err) {
