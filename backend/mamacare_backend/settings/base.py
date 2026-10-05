@@ -16,6 +16,7 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -185,3 +186,30 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
+
+
+# Jazzmin settings
+JAZZMIN_SETTINGS = {
+    "site_title": "MamaCare Admin",
+    "site_header": "MamaCare",
+    "site_brand": "MamaCare AI",
+    "welcome_sign": "Welcome to MamaCare Admin",
+    "copyright": "MamaCare AI Ltd",
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "users.user": "fas fa-user",
+        "appointments.appointment": "fas fa-calendar-check",
+        "records.record": "fas fa-file-medical",
+        "pregnancy.pregnancy": "fas fa-baby",
+    },
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "pulse",
+    "dark_mode_theme": "darkly",
+}
