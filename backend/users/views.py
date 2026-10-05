@@ -199,15 +199,44 @@ class AdminAnalyticsView(APIView):
         todays_appointments_count = today_appointments_qs.count()
         todays_patients = today_appointments_qs.values('mother').distinct().count()
         
-        # Patient Summary (Mocking High Risk/New based on created_at)
-        new_patients = User.objects.filter(role='mother', date_joined__gte=today - timedelta(days=30)).count()
-        # A simple high risk mockup: anyone with an SOS or recent abnormal vitals (for now we hardcode 10% or calculate)
-        high_risk_patients = max(1, int(total_patients * 0.1)) 
-        patient_summary = {
-            'total': total_patients,
-            'new': new_patients,
-            'high_risk': high_risk_patients
-        }
+        # Risk Overview (Calculated from AI RiskAssessments)
+        from ai_services.models import RiskAssessment
+        from users.models import MotherProfile
+        from django.db.models import OuterRef, Subquery
+        
+        latest_risks = RiskAssessment.objects.filter(
+            vitals_record__pregnancy__mother=OuterRef('pk')
+        ).order_by('-created_at')
+        
+        mothers_with_risk = User.objects.filter(role='mother').annotate(
+            latest_risk_level=Subquery(latest_risks.values('risk_level')[:1]),
+            latest_risk_score=Subquery(latest_risks.values('risk_score')[:1])
+        )
+        
+        low_c = mod_c = high_c = crit_c = 0
+        assessed_total = 0
+        for m in mothers_with_risk:
+            if m.latest_risk_level:
+                assessed_total += 1
+                if m.latest_risk_level == 'low':
+                    low_c += 1
+                elif m.latest_risk_level == 'medium':
+                    mod_c += 1
+                elif m.latest_risk_level == 'high':
+                    if m.latest_risk_score and m.latest_risk_score >= 0.9:
+                        crit_c += 1
+                    else:
+                        high_c += 1
+        
+        def calc_pct(count):
+            return int((count / assessed_total) * 100) if assessed_total > 0 else 0
+
+        risk_overview = [
+            {'label': 'Low Risk', 'pct': calc_pct(low_c), 'color': '#10b981'},
+            {'label': 'Moderate Risk', 'pct': calc_pct(mod_c), 'color': '#f59e0b'},
+            {'label': 'High Risk', 'pct': calc_pct(high_c), 'color': '#d97706'},
+            {'label': 'Critical', 'pct': calc_pct(crit_c), 'color': '#b91c1c'}
+        ]
 
         # Today's Appointments List
         todays_appointments_data = []
@@ -218,6 +247,15 @@ class AdminAnalyticsView(APIView):
                 'time': appt.date_time.strftime("%I:%M %p")
             })
 
+        # Patient Summary (Real Calculations)
+        new_patients = User.objects.filter(role='mother', date_joined__gte=today - timedelta(days=30)).count()
+        high_risk_patients = high_c + crit_c 
+        patient_summary = {
+            'total': total_patients,
+            'new': new_patients,
+            'high_risk': high_risk_patients
+        }
+
         # Next Patient Details
         next_patient = None
         next_appt = today_appointments_qs.filter(date_time__gte=timezone.now(), status='scheduled').first()
@@ -225,30 +263,31 @@ class AdminAnalyticsView(APIView):
             mother = next_appt.mother
             preg_record = PregnancyRecord.objects.filter(mother=mother).first()
             last_vitals = VitalsRecord.objects.filter(pregnancy=preg_record).first() if preg_record else None
+            profile = MotherProfile.objects.filter(user=mother).first()
+            
+            # Age Calculation
+            age = '--'
+            if profile and profile.date_of_birth:
+                age = f"{(today - profile.date_of_birth).days // 365}y"
+
+            # Last Visit
+            last_visit_obj = Appointment.objects.filter(mother=mother, date_time__lt=timezone.now()).order_by('-date_time').first()
+            last_visit_str = last_visit_obj.date_time.strftime("%b %d") if last_visit_obj else "First Visit"
             
             # Extract basic details
             weight = f"{last_vitals.weight_kg} kg" if last_vitals and last_vitals.weight_kg else "--"
-            # Note: We don't have height in the models, mocking it.
             
             next_patient = {
                 'name': mother.get_full_name() or mother.username or mother.email.split('@')[0],
                 'id': f"#PT-{mother.id}",
                 'sex': 'Female',
-                'age': '28y',  # Would come from MotherProfile.date_of_birth
+                'age': age,
                 'weight': weight,
-                'height': '165 cm',
-                'last_visit': 'Nov 14', # Mock for now
-                'registered': mother.date_joined.strftime("%b %d"),
+                'height': '--', # Not currently collected in forms
+                'last_visit': last_visit_str,
+                'registered': mother.date_joined.strftime("%b %d, %Y"),
                 'conditions': ['High BP'] if last_vitals and last_vitals.blood_pressure_systolic and last_vitals.blood_pressure_systolic > 140 else []
             }
-
-        # Risk Overview (Mocked logic for now, ideally calculated from AI models or Vitals)
-        risk_overview = [
-            {'label': 'Low Risk', 'pct': 65, 'color': '#10b981'},
-            {'label': 'Moderate Risk', 'pct': 20, 'color': '#f59e0b'},
-            {'label': 'High Risk', 'pct': 10, 'color': '#d97706'},
-            {'label': 'Critical', 'pct': 5, 'color': '#b91c1c'}
-        ]
 
         # Appointment Requests
         pending_qs = Appointment.objects.filter(status='scheduled', date_time__gte=timezone.now()).order_by('date_time')
