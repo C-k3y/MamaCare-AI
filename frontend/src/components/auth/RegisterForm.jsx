@@ -16,6 +16,8 @@ const RegisterForm = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -205,29 +207,71 @@ const RegisterForm = () => {
                     </div>
                     <div style={styles.formGroup}>
                         <label htmlFor="password" style={styles.label}>Password:</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            style={styles.input}
-                            placeholder="••••••••"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
+                        <div style={{ position: 'relative' }}>
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                style={{...styles.input, paddingRight: '45px'}}
+                                placeholder="••••••••"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                            />
+                            <button 
+                                type="button" 
+                                onClick={() => setShowPassword(!showPassword)}
+                                style={{
+                                    position: 'absolute',
+                                    right: '12px',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: '#718096',
+                                    padding: '4px',
+                                    fontSize: '0.8rem',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                {showPassword ? 'Hide' : 'Show'}
+                            </button>
+                        </div>
                     </div>
                     <div style={styles.formGroup}>
                         <label htmlFor="confirmPassword" style={styles.label}>Confirm Password:</label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            style={styles.input}
-                            placeholder="••••••••"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            required
-                        />
+                        <div style={{ position: 'relative' }}>
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                style={{...styles.input, paddingRight: '45px'}}
+                                placeholder="••••••••"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                required
+                            />
+                            <button 
+                                type="button" 
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                style={{
+                                    position: 'absolute',
+                                    right: '12px',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    color: '#718096',
+                                    padding: '4px',
+                                    fontSize: '0.8rem',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                {showConfirmPassword ? 'Hide' : 'Show'}
+                            </button>
+                        </div>
                     </div>
                     <button type="submit" style={styles.button} disabled={loading}>
                         {loading ? 'Creating account…' : 'Register'}
