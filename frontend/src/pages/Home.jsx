@@ -218,7 +218,7 @@ const Home = () => {
                     </div>
                 </section>
 
-                <section style={styles.featuresSection}>
+                <section id="features" style={styles.featuresSection}>
                     <h2 style={styles.featuresSectionTitle}>Everything You Need</h2>
                     <p style={styles.featuresSectionSub}>Comprehensive tools designed for a safe and informed pregnancy experience.</p>
                     <div style={styles.featuresGrid}>
@@ -234,6 +234,26 @@ const Home = () => {
                                 <p style={styles.featureDesc}>{f.desc}</p>
                             </div>
                         ))}
+                    </div>
+                </section>
+
+                <section id="pricing" style={{ ...styles.featuresSection, background: 'rgba(251, 111, 146, 0.03)' }}>
+                    <h2 style={styles.featuresSectionTitle}>Simple, Transparent Pricing</h2>
+                    <p style={styles.featuresSectionSub}>Choose the plan that fits your journey.</p>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '32px', flexWrap: 'wrap' }}>
+                        <div style={{ ...styles.featureCard, textAlign: 'center', maxWidth: '300px' }}>
+                            <h3 style={{ fontSize: '1.5rem', color: '#1a202c', margin: '0 0 16px 0' }}>Basic</h3>
+                            <p style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fb6f92', margin: '0 0 8px 0' }}>Free</p>
+                            <p style={{ color: '#718096', marginBottom: '24px' }}>Essential pregnancy tracking tools</p>
+                            <Link to="/register" style={{ ...styles.btnPrimary, display: 'block' }}>Get Started</Link>
+                        </div>
+                        <div style={{ ...styles.featureCard, textAlign: 'center', maxWidth: '300px', border: '2px solid #fb6f92', transform: 'scale(1.05)' }}>
+                            <div style={{ background: '#fb6f92', color: 'white', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: '700', display: 'inline-block', marginBottom: '16px' }}>MOST POPULAR</div>
+                            <h3 style={{ fontSize: '1.5rem', color: '#1a202c', margin: '0 0 16px 0' }}>Premium</h3>
+                            <p style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fb6f92', margin: '0 0 8px 0' }}>$9<span style={{ fontSize: '1rem', color: '#718096' }}>/mo</span></p>
+                            <p style={{ color: '#718096', marginBottom: '24px' }}>24/7 AI chat & specialist priority</p>
+                            <Link to="/register" style={{ ...styles.btnPrimary, display: 'block' }}>Upgrade</Link>
+                        </div>
                     </div>
                 </section>
 
