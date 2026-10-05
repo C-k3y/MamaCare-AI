@@ -76,6 +76,10 @@ class VitalsRecord(models.Model):
         null=True, blank=True,
         validators=[MinValueValidator(0), MaxValueValidator(100)]
     )
+    fetal_heart_rate_bpm = models.PositiveIntegerField(
+        null=True, blank=True,
+        validators=[MinValueValidator(60), MaxValueValidator(220)]
+    )
     
     notes = models.TextField(blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
