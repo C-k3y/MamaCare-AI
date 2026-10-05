@@ -59,9 +59,9 @@ const Navbar = () => {
                 <span></span> MamaCare AI
             </Link>
             <div style={styles.links}>
-                <a href="#features" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#4a5568'}>Features</a>
-                <a href="#about" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#4a5568'}>About</a>
-                <a href="#pricing" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#4a5568'}>Pricing</a>
+                <a href="/#features" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#4a5568'}>Features</a>
+                <Link to="/about" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#4a5568'}>About</Link>
+                <a href="/#pricing" style={styles.link} onMouseOver={e => e.target.style.color = '#fb6f92'} onMouseOut={e => e.target.style.color = '#4a5568'}>Pricing</a>
                 <Link 
                     to="/login" 
                     style={styles.loginBtn}
