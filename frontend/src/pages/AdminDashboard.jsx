@@ -89,7 +89,6 @@ const AdminDashboard = () => {
     const todayDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const doctorInitials = (user?.first_name || user?.name || 'DR').substring(0,2).toUpperCase();
 
-    // Fallbacks if data is still loading
     const total_patients = data?.total_patients || 0;
     const todays_patients = data?.todays_patients || 0;
     const todays_appointments_count = data?.todays_appointments_count || 0;
@@ -99,49 +98,13 @@ const AdminDashboard = () => {
     const risk_overview = data?.risk_overview || [];
     const appointment_requests = data?.appointment_requests || [];
 
-    // Donut percentages
     const donutTotal = patient_summary.total || 1;
     const pNew = (patient_summary.new / donutTotal) * 100;
     const pRisk = (patient_summary.high_risk / donutTotal) * 100;
-    const pReg = 100 - pNew - pRisk;
 
-    return (
-        <div style={s.page}>
-            <aside style={s.sidebar}>
-                <div style={s.profileSection}>
-                    <div style={s.starShape}></div>
-                    <div style={s.avatarImg}>{doctorInitials}</div>
-                    <h2 style={s.providerName}>Dr. {user?.first_name || user?.username || 'Provider'}</h2>
-                    <p style={s.credentials}>MBBS, FCPS - MD (Medicine)<br/>OB/GYN Specialist</p>
-                </div>
-                
-                <nav style={s.navMenu}>
-                    {['Dashboard', 'Appointments', 'Appointment Requests', 'Patients', 'Prescriptions', 'Profile', 'Settings'].map(item => (
-                        <div key={item} style={s.navItem(activeMenu === item)} onClick={() => setActiveMenu(item)}>
-                            <span style={{width: '20px', height: '20px', background: activeMenu === item ? colors.primary : colors.textLight, opacity: 0.5, borderRadius: '4px'}}></span>
-                            {item}
-                        </div>
-                    ))}
-                    <div style={{...s.navItem(false), marginTop: 'auto', color: colors.danger}} onClick={handleLogout}>
-                        Logout
-                    </div>
-                </nav>
-            </aside>
-
-            <main style={s.main}>
-                <header style={s.header}>
-                    <h1 style={s.headerTitle}>MamaCare AI — Provider Dashboard</h1>
-                    <div style={s.headerRight}>
-                        <div style={s.searchBar}>
-                            <SvgIcon d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            <input type="text" placeholder="Search patients..." style={s.searchInput} />
-                        </div>
-                        <button style={s.iconBtn}><SvgIcon d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></button>
-                        <button style={s.iconBtn}><SvgIcon d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" /></button>
-                        <button style={s.iconBtn}><SvgIcon d="M4 6h16M4 12h16M4 18h16" /></button>
-                    </div>
-                </header>
-
+    const renderContent = () => {
+        if (activeMenu === 'Dashboard') {
+            return (
                 <div style={s.contentArea}>
                     <div style={s.row3}>
                         <div style={{...s.card, ...s.statCard}}>
@@ -307,6 +270,71 @@ const AdminDashboard = () => {
                         </div>
                     </div>
                 </div>
+            );
+        } else {
+            // Placeholder for other tabs
+            return (
+                <div style={s.contentArea}>
+                    <h2 style={{margin: '0 0 8px 0'}}>{activeMenu}</h2>
+                    <p style={{color: colors.textLight, margin: '0 0 24px 0'}}>Manage your {activeMenu.toLowerCase()} here.</p>
+                    
+                    <div style={s.card}>
+                        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '60px 0'}}>
+                            <div style={{width: '64px', height: '64px', borderRadius: '50%', backgroundColor: colors.primaryLight, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px'}}>
+                                <SvgIcon d="M4 6h16M4 12h16M4 18h16" size={32} color={colors.primary} />
+                            </div>
+                            <h3 style={{margin: '0 0 8px 0', fontSize: '1.2rem'}}>No {activeMenu.toLowerCase()} found</h3>
+                            <p style={{margin: 0, color: colors.textLight, textAlign: 'center', maxWidth: '400px'}}>
+                                This tab is currently empty. As you begin using the platform, your {activeMenu.toLowerCase()} will appear here in a beautifully organized list.
+                            </p>
+                            <button style={{...s.btn(true), marginTop: '24px', padding: '12px 24px'}}>
+                                + Add New {activeMenu.endsWith('s') ? activeMenu.slice(0, -1) : activeMenu}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    };
+
+    return (
+        <div style={s.page}>
+            <aside style={s.sidebar}>
+                <div style={s.profileSection}>
+                    <div style={s.starShape}></div>
+                    <div style={s.avatarImg}>{doctorInitials}</div>
+                    <h2 style={s.providerName}>Dr. {user?.first_name || user?.username || 'Provider'}</h2>
+                    <p style={s.credentials}>MBBS, FCPS - MD (Medicine)<br/>OB/GYN Specialist</p>
+                </div>
+                
+                <nav style={s.navMenu}>
+                    {['Dashboard', 'Appointments', 'Appointment Requests', 'Patients', 'Prescriptions', 'Profile', 'Settings'].map(item => (
+                        <div key={item} style={s.navItem(activeMenu === item)} onClick={() => setActiveMenu(item)}>
+                            <span style={{width: '20px', height: '20px', background: activeMenu === item ? colors.primary : colors.textLight, opacity: 0.5, borderRadius: '4px'}}></span>
+                            {item}
+                        </div>
+                    ))}
+                    <div style={{...s.navItem(false), marginTop: 'auto', color: colors.danger}} onClick={handleLogout}>
+                        Logout
+                    </div>
+                </nav>
+            </aside>
+
+            <main style={s.main}>
+                <header style={s.header}>
+                    <h1 style={s.headerTitle}>MamaCare AI — Provider Dashboard</h1>
+                    <div style={s.headerRight}>
+                        <div style={s.searchBar}>
+                            <SvgIcon d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            <input type="text" placeholder="Search patients..." style={s.searchInput} />
+                        </div>
+                        <button style={s.iconBtn}><SvgIcon d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></button>
+                        <button style={s.iconBtn}><SvgIcon d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" /></button>
+                        <button style={s.iconBtn}><SvgIcon d="M4 6h16M4 12h16M4 18h16" /></button>
+                    </div>
+                </header>
+
+                {renderContent()}
             </main>
         </div>
     );
