@@ -7,7 +7,7 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'role', 'first_name', 'last_name')
+        fields = ('id', 'email', 'username', 'role', 'first_name', 'last_name', 'profile_picture')
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -41,11 +41,21 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
         # Add user data to the response
+        request = self.context.get('request')
+        pic_url = None
+        if self.user.profile_picture:
+            pic_url = self.user.profile_picture.url
+            if request is not None:
+                pic_url = request.build_absolute_uri(pic_url)
+
         data['user'] = {
             'id': self.user.id,
             'email': self.user.email,
             'username': self.user.username,
             'role': self.user.role,
+            'first_name': self.user.first_name,
+            'last_name': self.user.last_name,
+            'profile_picture': pic_url,
         }
         return data
 
