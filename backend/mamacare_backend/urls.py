@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from .views import api_root
 
 urlpatterns = [
@@ -30,6 +32,9 @@ urlpatterns = [
     path('api/messages/', include('communications.urls')),
     path('api/', include('ai_services.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = 'mamacare_backend.views.custom_404'
 handler500 = 'mamacare_backend.views.custom_500'
