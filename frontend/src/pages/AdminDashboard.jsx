@@ -271,6 +271,74 @@ const AdminDashboard = () => {
                     </div>
                 </div>
             );
+        } else if (activeMenu === 'Profile') {
+            return (
+                <div style={s.contentArea}>
+                    <h2 style={{margin: '0 0 24px 0'}}>Provider Profile</h2>
+                    
+                    <div style={{...s.card, maxWidth: '600px'}}>
+                        <div style={{display: 'flex', gap: '32px', alignItems: 'flex-start'}}>
+                            {/* Avatar Upload Column */}
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px'}}>
+                                <div style={{
+                                    width: '120px', height: '120px', borderRadius: '50%', backgroundColor: colors.primaryLight,
+                                    border: `4px solid ${colors.bg}`, boxShadow: `0 4px 12px rgba(107,33,168,0.15)`,
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', position: 'relative'
+                                }}>
+                                    {user?.profile_picture ? (
+                                        <img src={user.profile_picture} alt="Profile" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                                    ) : (
+                                        <span style={{fontSize: '2rem', fontWeight: 'bold', color: colors.primary}}>{doctorInitials}</span>
+                                    )}
+                                </div>
+                                <label style={{...s.btn(false), cursor: 'pointer', padding: '8px 16px', fontSize: '0.85rem', width: '100%', boxSizing: 'border-box'}}>
+                                    Change Photo
+                                    <input type="file" accept="image/*" style={{display: 'none'}} onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                            const formData = new FormData();
+                                            formData.append('profile_picture', file);
+                                            adminApi.uploadProfilePicture(formData)
+                                                .then(res => {
+                                                    alert("Profile picture updated! Please refresh to see changes globally.");
+                                                    window.location.reload();
+                                                })
+                                                .catch(err => alert("Failed to upload image."));
+                                        }
+                                    }} />
+                                </label>
+                                <button style={{...s.btn(false), padding: '8px 16px', fontSize: '0.85rem', width: '100%', boxSizing: 'border-box'}} onClick={() => {
+                                    if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                                        alert("Camera integration requires HTTPS and additional setup. Upload a photo for now!");
+                                    }
+                                }}>
+                                    Take a Selfie
+                                </button>
+                            </div>
+                            
+                            {/* Details Column */}
+                            <div style={{flex: 1}}>
+                                <h3 style={{margin: '0 0 16px 0', fontSize: '1.2rem', color: colors.text}}>Basic Information</h3>
+                                <div style={{display: 'grid', gap: '16px'}}>
+                                    <div>
+                                        <label style={{display: 'block', fontSize: '0.85rem', color: colors.textLight, marginBottom: '4px'}}>Full Name</label>
+                                        <input type="text" defaultValue={user?.first_name ? `${user.first_name} ${user.last_name}` : user?.username} style={{...s.searchInput, border: `1px solid ${colors.border}`, padding: '10px 16px', borderRadius: '8px', marginLeft: 0}} />
+                                    </div>
+                                    <div>
+                                        <label style={{display: 'block', fontSize: '0.85rem', color: colors.textLight, marginBottom: '4px'}}>Email Address</label>
+                                        <input type="email" defaultValue={user?.email} style={{...s.searchInput, border: `1px solid ${colors.border}`, padding: '10px 16px', borderRadius: '8px', marginLeft: 0}} disabled />
+                                    </div>
+                                    <div>
+                                        <label style={{display: 'block', fontSize: '0.85rem', color: colors.textLight, marginBottom: '4px'}}>Role</label>
+                                        <input type="text" defaultValue={user?.role?.toUpperCase()} style={{...s.searchInput, border: `1px solid ${colors.border}`, padding: '10px 16px', borderRadius: '8px', marginLeft: 0, backgroundColor: colors.bg}} disabled />
+                                    </div>
+                                </div>
+                                <button style={{...s.btn(true), marginTop: '24px', width: 'auto', padding: '10px 24px'}}>Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
         } else {
             // Placeholder for other tabs
             return (
@@ -302,7 +370,11 @@ const AdminDashboard = () => {
             <aside style={s.sidebar}>
                 <div style={s.profileSection}>
                     <div style={s.starShape}></div>
-                    <div style={s.avatarImg}>{doctorInitials}</div>
+                    <div style={s.avatarImg} style={{...s.avatarImg, overflow: 'hidden', padding: 0}}>
+                        {user?.profile_picture ? (
+                            <img src={user.profile_picture} alt="Avatar" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                        ) : doctorInitials}
+                    </div>
                     <h2 style={s.providerName}>Dr. {user?.first_name || user?.username || 'Provider'}</h2>
                     <p style={s.credentials}>MBBS, FCPS - MD (Medicine)<br/>OB/GYN Specialist</p>
                 </div>
