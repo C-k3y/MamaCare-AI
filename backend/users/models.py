@@ -11,6 +11,7 @@ class User(AbstractUser):
     
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='mother')
     email = models.EmailField(unique=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
 
     # Use email for authentication instead of username
     USERNAME_FIELD = 'email'
