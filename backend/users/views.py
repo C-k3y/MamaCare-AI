@@ -4,13 +4,16 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
-from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer, UserSerializer
+from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer, UserSerializer, ProviderTokenObtainPairSerializer
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+class ProviderTokenObtainPairView(TokenObtainPairView):
+    serializer_class = ProviderTokenObtainPairSerializer
 
 
 class RegisterView(generics.CreateAPIView):
