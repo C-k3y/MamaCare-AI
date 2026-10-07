@@ -22,6 +22,24 @@ export const authService = {
         }
     },
 
+    providerLogin: async (credentials) => {
+        try {
+            const res = await axiosInstance.post('/users/admin/login/', credentials);
+            return {
+                token: res.data.access,
+                refresh: res.data.refresh,
+                role: res.data.user.role,
+                user: res.data.user
+            };
+        } catch (error) {
+            if (error.response && error.response.data) {
+                const msg = error.response.data.detail || error.response.data.email?.[0] || error.response.data.password?.[0] || JSON.stringify(error.response.data);
+                throw new Error(msg);
+            }
+            throw error;
+        }
+    },
+
     register: async (userData) => {
         const payload = {
             username: userData.name.replace(/\s+/g, '').toLowerCase() + Math.floor(Math.random() * 1000),
