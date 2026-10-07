@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -60,7 +61,13 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return data
 
 
-from .models import MotherProfile, DoctorProfile
+class ProviderTokenObtainPairSerializer(CustomTokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        # Check role at the backend level
+        if self.user.role not in ['admin', 'doctor']:
+            raise AuthenticationFailed('Access denied. This portal is for healthcare providers only.', code='authorization')
+        return data
 
 class MotherProfileSerializer(serializers.ModelSerializer):
     class Meta:
