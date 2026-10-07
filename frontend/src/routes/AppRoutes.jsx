@@ -16,6 +16,7 @@ import { ROLES } from '../constants/roles';
 import Home from '../pages/Home';
 import About from '../pages/About';
 import Login from '../pages/Login';
+import AdminLogin from '../pages/AdminLogin';
 import Register from '../pages/Register';
 import ForgotPassword from '../pages/ForgotPassword';
 import NotFound from '../pages/NotFound';
@@ -53,6 +54,7 @@ const AppRoutes = () => {
                                 {/* Restricted Public Routes (hide from logged in users) */}
                                 <Route element={<PublicRoute restricted />}>
                                     <Route path="/login" element={<Login />} />
+                                    <Route path="/admin/login" element={<AdminLogin />} />
                                     <Route path="/register" element={<Register />} />
                                     <Route path="/forgot-password" element={<ForgotPassword />} />
                                 </Route>
