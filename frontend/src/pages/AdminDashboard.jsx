@@ -10,6 +10,12 @@ const AdminDashboard = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // New states for interactive elements
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [showMessages, setShowMessages] = useState(false);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [modalState, setModalState] = useState({ isOpen: false, type: '', title: '' });
+
     useEffect(() => {
         adminApi.getAnalytics()
             .then(res => {
@@ -355,7 +361,7 @@ const AdminDashboard = () => {
                             <p style={{margin: 0, color: colors.textLight, textAlign: 'center', maxWidth: '400px'}}>
                                 This tab is currently empty. As you begin using the platform, your {activeMenu.toLowerCase()} will appear here in a beautifully organized list.
                             </p>
-                            <button style={{...s.btn(true), marginTop: '24px', padding: '12px 24px'}}>
+                            <button style={{...s.btn(true), marginTop: '24px', padding: '12px 24px'}} onClick={() => setModalState({ isOpen: true, type: activeMenu })}>
                                 + Add New {activeMenu.endsWith('s') ? activeMenu.slice(0, -1) : activeMenu}
                             </button>
                         </div>
@@ -367,10 +373,11 @@ const AdminDashboard = () => {
 
     return (
         <div style={s.page}>
-            <aside style={s.sidebar}>
-                <div style={s.profileSection}>
-                    <div style={s.starShape}></div>
-                    <div style={s.avatarImg} style={{...s.avatarImg, overflow: 'hidden', padding: 0}}>
+            {sidebarOpen && (
+                <aside style={s.sidebar}>
+                    <div style={s.profileSection}>
+                        <div style={s.starShape}></div>
+                        <div style={s.avatarImg} style={{...s.avatarImg, overflow: 'hidden', padding: 0}}>
                         {user?.profile_picture ? (
                             <img src={user.profile_picture} alt="Avatar" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
                         ) : doctorInitials}
@@ -391,23 +398,91 @@ const AdminDashboard = () => {
                     </div>
                 </nav>
             </aside>
+            )}
 
             <main style={s.main}>
                 <header style={s.header}>
-                    <h1 style={s.headerTitle}>MamaCare AI — Provider Dashboard</h1>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '16px'}}>
+                        {!sidebarOpen && (
+                            <button style={s.iconBtn} onClick={() => setSidebarOpen(true)}>
+                                <SvgIcon d="M4 6h16M4 12h16M4 18h16" />
+                            </button>
+                        )}
+                        <h1 style={s.headerTitle}>MamaCare AI — Provider Dashboard</h1>
+                    </div>
                     <div style={s.headerRight}>
                         <div style={s.searchBar}>
                             <SvgIcon d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             <input type="text" placeholder="Search patients..." style={s.searchInput} />
                         </div>
-                        <button style={s.iconBtn}><SvgIcon d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></button>
-                        <button style={s.iconBtn}><SvgIcon d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" /></button>
-                        <button style={s.iconBtn}><SvgIcon d="M4 6h16M4 12h16M4 18h16" /></button>
+                        
+                        {/* Messages / Envelope Icon */}
+                        <div style={{position: 'relative'}}>
+                            <button style={s.iconBtn} onClick={() => { setShowMessages(!showMessages); setShowNotifications(false); }}>
+                                <SvgIcon d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                <span style={{position:'absolute', top:'-2px', right:'-2px', width:'8px', height:'8px', background:colors.danger, borderRadius:'50%'}}></span>
+                            </button>
+                            {showMessages && (
+                                <div style={{position: 'absolute', top: '100%', right: 0, marginTop: '12px', width: '300px', background: 'white', borderRadius: '12px', boxShadow: '0 10px 40px rgba(0,0,0,0.1)', border: `1px solid ${colors.border}`, zIndex: 100, padding: '16px'}}>
+                                    <h4 style={{margin: '0 0 12px 0', borderBottom: `1px solid ${colors.border}`, paddingBottom: '8px'}}>Direct Messages</h4>
+                                    <p style={{fontSize: '0.85rem', color: colors.textLight, margin: 0}}>You have 1 new message from Sarah Jenkins.</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Notifications / Bell Icon */}
+                        <div style={{position: 'relative'}}>
+                            <button style={s.iconBtn} onClick={() => { setShowNotifications(!showNotifications); setShowMessages(false); }}>
+                                <SvgIcon d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" />
+                                <span style={{position:'absolute', top:'-2px', right:'-2px', width:'8px', height:'8px', background:colors.danger, borderRadius:'50%'}}></span>
+                            </button>
+                            {showNotifications && (
+                                <div style={{position: 'absolute', top: '100%', right: 0, marginTop: '12px', width: '300px', background: 'white', borderRadius: '12px', boxShadow: '0 10px 40px rgba(0,0,0,0.1)', border: `1px solid ${colors.border}`, zIndex: 100, padding: '16px'}}>
+                                    <h4 style={{margin: '0 0 12px 0', borderBottom: `1px solid ${colors.border}`, paddingBottom: '8px'}}>System Alerts</h4>
+                                    <p style={{fontSize: '0.85rem', color: colors.textLight, margin: '0 0 8px 0'}}>⚠️ High BP detected for Patient #PT-8942.</p>
+                                    <p style={{fontSize: '0.85rem', color: colors.textLight, margin: 0}}>📅 New Appointment request from Linda Osei.</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Hamburger Icon (Toggle Sidebar) */}
+                        <button style={s.iconBtn} onClick={() => setSidebarOpen(!sidebarOpen)}>
+                            <SvgIcon d="M4 6h16M4 12h16M4 18h16" />
+                        </button>
                     </div>
                 </header>
 
                 {renderContent()}
             </main>
+
+            {/* Global Add Modal */}
+            {modalState.isOpen && (
+                <div style={{position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(15,23,42,0.6)', backdropFilter: 'blur(4px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                    <div style={{background: 'white', padding: '32px', borderRadius: '24px', width: '100%', maxWidth: '400px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)'}}>
+                        <h3 style={{margin: '0 0 8px 0', fontSize: '1.4rem', color: colors.text}}>Add New {modalState.type.endsWith('s') ? modalState.type.slice(0, -1) : modalState.type}</h3>
+                        <p style={{color: colors.textLight, marginBottom: '24px', fontSize: '0.9rem'}}>Please fill in the necessary details to create this record.</p>
+                        
+                        <div style={{display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px'}}>
+                            <div>
+                                <label style={{display: 'block', fontSize: '0.85rem', color: colors.textLight, marginBottom: '6px', fontWeight: '600'}}>Record Title / Patient Name</label>
+                                <input type="text" placeholder="Enter name here..." style={{...s.searchInput, border: `1px solid ${colors.border}`, padding: '12px 16px', borderRadius: '12px', marginLeft: 0, width: '100%', boxSizing: 'border-box'}} />
+                            </div>
+                            <div>
+                                <label style={{display: 'block', fontSize: '0.85rem', color: colors.textLight, marginBottom: '6px', fontWeight: '600'}}>Additional Details</label>
+                                <textarea placeholder="Enter details..." style={{...s.searchInput, border: `1px solid ${colors.border}`, padding: '12px 16px', borderRadius: '12px', marginLeft: 0, width: '100%', boxSizing: 'border-box', minHeight: '80px', fontFamily: 'inherit'}}></textarea>
+                            </div>
+                        </div>
+                        
+                        <div style={{display: 'flex', gap: '12px'}}>
+                            <button style={{...s.btn(false), flex: 1}} onClick={() => setModalState({ isOpen: false, type: '' })}>Cancel</button>
+                            <button style={{...s.btn(true), flex: 1}} onClick={() => {
+                                alert("Record saved successfully! (This is a frontend UI placeholder)");
+                                setModalState({ isOpen: false, type: '' });
+                            }}>Save Record</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
