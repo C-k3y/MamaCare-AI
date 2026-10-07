@@ -3,6 +3,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
     RegisterView,
     CustomTokenObtainPairView,
+    ProviderTokenObtainPairView,
     LogoutView,
     UserProfileView,
     MotherProfileView,
@@ -12,12 +13,14 @@ from .views import (
     VerifyDoctorView,
     RequestPasswordResetEmail,
     PasswordTokenCheckAPI,
-    SetNewPasswordAPIView
+    SetNewPasswordAPIView,
+    AdminAnalyticsView
 )
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', CustomTokenObtainPairView.as_view(), name='login'),
+    path('admin/login/', ProviderTokenObtainPairView.as_view(), name='provider_login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('profile/', UserProfileView.as_view(), name='user_profile'),
@@ -33,4 +36,5 @@ urlpatterns = [
     # Admin Doctor Verification Endpoints
     path('admin/doctors/pending/', PendingDoctorsListView.as_view(), name='pending_doctors'),
     path('admin/doctors/<int:pk>/verify/', VerifyDoctorView.as_view(), name='verify_doctor'),
+    path('admin/analytics/', AdminAnalyticsView.as_view(), name='admin_analytics'),
 ]
