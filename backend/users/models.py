@@ -45,6 +45,7 @@ class MotherProfile(models.Model):
     emergency_contact_name = models.CharField(max_length=255, blank=True)
     emergency_contact_phone = models.CharField(max_length=20, blank=True)
     blood_group = models.CharField(max_length=5, blank=True)
+    is_approved = models.BooleanField(default=False, help_text="Requires doctor approval before full access")
 
     def __str__(self):
         return f"Mother Profile: {self.user.email}"
