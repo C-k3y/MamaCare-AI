@@ -10,6 +10,7 @@ import { UserProvider } from '../context/UserContext';
 import PublicRoute from './PublicRoute';
 import PrivateRoute from './PrivateRoute';
 import RoleProtectedRoute from './RoleProtectedRoute';
+import OnboardingGuard from './OnboardingGuard';
 import { ROLES } from '../constants/roles';
 
 // Public pages
@@ -61,17 +62,19 @@ const AppRoutes = () => {
 
                                 {/* Private Patient Routes */}
                                 <Route element={<RoleProtectedRoute allowedRoles={[ROLES.PATIENT]} />}>
-                                    <Route path="/dashboard" element={<Dashboard />} />
-                                    <Route path="/appointments" element={<Appointments />} />
-                                    <Route path="/nutrition" element={<Nutrition />} />
-                                    <Route path="/pregnancy" element={<PregnancyTracker />} />
-                                    <Route path="/emergency" element={<Emergency />} />
-                                    <Route path="/profile" element={<Profile />} />
-                                    <Route path="/notifications" element={<Notifications />} />
-                                    <Route path="/messages" element={<Messages />} />
-                                    <Route path="/reports" element={<Reports />} />
-                                    <Route path="/settings" element={<Setttings />} />
-                                    <Route path="/symptom-checker" element={<SymptomChecker />} />
+                                    <Route element={<OnboardingGuard />}>
+                                        <Route path="/dashboard" element={<Dashboard />} />
+                                        <Route path="/appointments" element={<Appointments />} />
+                                        <Route path="/nutrition" element={<Nutrition />} />
+                                        <Route path="/pregnancy" element={<PregnancyTracker />} />
+                                        <Route path="/emergency" element={<Emergency />} />
+                                        <Route path="/profile" element={<Profile />} />
+                                        <Route path="/notifications" element={<Notifications />} />
+                                        <Route path="/messages" element={<Messages />} />
+                                        <Route path="/reports" element={<Reports />} />
+                                        <Route path="/settings" element={<Setttings />} />
+                                        <Route path="/symptom-checker" element={<SymptomChecker />} />
+                                    </Route>
                                 </Route>
 
                                 {/* Role-specific Routes */}
