@@ -69,11 +69,13 @@ class ProviderTokenObtainPairSerializer(CustomTokenObtainPairSerializer):
             raise AuthenticationFailed('Access denied. This portal is for healthcare providers only.', code='authorization')
         return data
 
+from .models import MotherProfile, DoctorProfile
+
 class MotherProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = MotherProfile
         fields = '__all__'
-        read_only_fields = ('user',)
+        read_only_fields = ('user', 'is_approved')
 
 
 class DoctorProfileSerializer(serializers.ModelSerializer):
